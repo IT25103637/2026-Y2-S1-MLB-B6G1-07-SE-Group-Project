@@ -1,0 +1,8 @@
+target/
+.idea/
+*.iml
+.vscode/
+*.log
+
+# local credentials
+src/main/resources/application-secrets.properties
