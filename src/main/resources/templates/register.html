@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Registration - Sri Lanka Wild-Life Safari System</title>
+    <link rel="stylesheet" href="/css/safari-theme.css?v=7">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--color-bg-light); padding: 40px 20px;">
+
+    <div style="background: var(--color-card-bg); width: 100%; max-width: 520px; padding: 40px 32px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); border: 1px solid var(--color-border);">
+        <div style="text-align: center; margin-bottom: 28px;">
+            <h1 style="font-size: 1.625rem; color: var(--color-primary); font-weight: 800; letter-spacing: -0.3px;">Join Wild-Life Safari <span style="color: var(--color-accent);">Sri Lanka</span></h1>
+            <p style="color: var(--color-text-muted); font-size: 0.938rem; margin-top: 6px;">Create your customer account to book safari adventures</p>
+        </div>
+
+        <form id="registerForm" onsubmit="handleRegister(event)">
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="regName">Full Legal Name *</label>
+                <input type="text" id="regName" class="form-control" placeholder="e.g. Johnathan Perera" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label for="regEmail">Email Address *</label>
+                <input type="email" id="regEmail" class="form-control" placeholder="e.g. traveler@domain.com" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+                <div class="form-group">
+                    <label for="regPassword">Password *</label>
+                    <input type="password" id="regPassword" class="form-control" placeholder="••••••••" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label for="regPhone">Mobile / Phone *</label>
+                    <input type="text" id="regPhone" class="form-control" placeholder="+94 77 123 4567" required>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+                <div class="form-group">
+                    <label for="regNat">Nationality</label>
+                    <input type="text" id="regNat" class="form-control" placeholder="e.g. Australian">
+                </div>
+                <div class="form-group">
+                    <label for="regDoc">Passport / NIC</label>
+                    <input type="text" id="regDoc" class="form-control" placeholder="PA9837192">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 24px;">
+                <label for="regEmergency">Emergency Contact Phone</label>
+                <input type="text" id="regEmergency" class="form-control" placeholder="+61 412 345 678">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-bottom: 20px;">Register Customer Account</button>
+        </form>
+
+        <div style="text-align: center; font-size: 0.938rem; color: var(--color-text-muted);">
+            Already have an account? <a href="/login" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">Sign in here</a>
+            <br><a href="/" style="color: var(--color-text-muted); text-decoration: none; display: inline-block; margin-top: 10px;">&larr; Back to Home</a>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+    <script src="/js/safari-app.js?v=7"></script>
+    <script>
+        async function handleRegister(e) {
+            e.preventDefault();
+            const payload = {
+                fullName: document.getElementById('regName').value,
+                email: document.getElementById('regEmail').value,
+                password: document.getElementById('regPassword').value,
+                phone: document.getElementById('regPhone').value,
+                nationality: document.getElementById('regNat').value,
+                passportOrNic: document.getElementById('regDoc').value,
+                emergencyContact: document.getElementById('regEmergency').value
+            };
+
+            try {
+                const res = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    alert('Registration successful! Please log in with your new account.');
+                    window.location.href = '/login';
+                } else {
+                    alert(data.message || 'Registration failed');
+                }
+            } catch (err) {
+                alert('Error: ' + err.message);
+            }
+        }
+    </script>
+</body>
+</html>

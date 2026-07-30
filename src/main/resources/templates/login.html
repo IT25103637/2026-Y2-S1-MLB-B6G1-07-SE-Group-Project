@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - Sri Lanka Wild-Life Safari System</title>
+    <link rel="stylesheet" href="/css/safari-theme.css?v=7">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: var(--color-bg-light);">
+
+    <div style="background: var(--color-card-bg); width: 100%; max-width: 440px; padding: 40px 32px; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); border: 1px solid var(--color-border); margin: 20px;">
+        <div style="text-align: center; margin-bottom: 28px;">
+            <h1 style="font-size: 1.625rem; color: var(--color-primary); font-weight: 800; letter-spacing: -0.3px;">Wild-Life Safari <span style="color: var(--color-accent);">Sri Lanka</span></h1>
+            <p style="color: var(--color-text-muted); font-size: 0.938rem; margin-top: 6px;">Sign in to your account</p>
+        </div>
+
+        <div th:if="${errorMessage}" class="alert alert-error">
+            <span th:text="${errorMessage}">Invalid email or password</span>
+        </div>
+
+        <div th:if="${logoutMessage}" class="alert alert-success">
+            <span th:text="${logoutMessage}">Logged out successfully</span>
+        </div>
+
+        <form action="/perform_login" method="post">
+            <div class="form-group" style="margin-bottom: 18px;">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" class="form-control" placeholder="name@safari.lk" required autofocus>
+            </div>
+            <div class="form-group" style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label for="password">Password</label>
+                    <a href="/forgot-password" style="font-size: 0.813rem; color: var(--color-primary); text-decoration: none; font-weight: 500;">Forgot?</a>
+                </div>
+                <input type="password" id="password" name="password" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; margin-bottom: 20px;">Sign In</button>
+        </form>
+
+        <div style="background: var(--color-stat-bg); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--color-border); margin-bottom: 24px;">
+            <span style="font-size: 0.813rem; font-weight: 600; color: var(--color-text-muted); display: block; margin-bottom: 10px;">
+                Quick Access Roles:
+            </span>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                <button type="button" class="btn btn-sm btn-outline" onclick="fillLogin('customer@safari.lk')">Customer</button>
+                <button type="button" class="btn btn-sm btn-outline" onclick="fillLogin('booking@safari.lk')">Booking Mgr</button>
+                <button type="button" class="btn btn-sm btn-outline" onclick="fillLogin('operations@safari.lk')">Operations</button>
+                <button type="button" class="btn btn-sm btn-outline" onclick="fillLogin('fleet@safari.lk')">Fleet Mgr</button>
+                <button type="button" class="btn btn-sm btn-outline" onclick="fillLogin('finance@safari.lk')">Finance Mgr</button>
+                <button type="button" class="btn btn-sm btn-outline" onclick="fillLogin('admin@safari.lk')">System Admin</button>
+            </div>
+        </div>
+
+        <div style="text-align: center; font-size: 0.938rem; color: var(--color-text-muted);">
+            Don't have an account? <a href="/register" style="color: var(--color-primary); font-weight: 600; text-decoration: none;">Register here</a>
+            <br><a href="/" style="color: var(--color-text-muted); text-decoration: none; display: inline-block; margin-top: 10px;">&larr; Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        function fillLogin(email) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = 'Password123!';
+        }
+    </script>
+</body>
+</html>

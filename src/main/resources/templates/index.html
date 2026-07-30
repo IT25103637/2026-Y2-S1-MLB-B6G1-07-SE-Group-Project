@@ -1,0 +1,2191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wild-Life Safari Sri Lanka | Explore the Wild — Safari Trip Management System</title>
+    <meta name="description" content="Book guided wildlife safaris across Sri Lanka's national parks — Yala, Wilpattu, Minneriya and Udawalawe. Browse destinations, choose a safari package, and manage your booking online.">
+    <meta name="theme-color" content="#0b0f0c">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Explore the Wild — Wild-Life Safari Sri Lanka">
+    <meta property="og:description" content="Guided wildlife safaris across Sri Lanka's national parks, planned and booked on one professional platform.">
+    <meta property="og:image" content="/images/home/og-hero.jpg">
+    <meta name="twitter:card" content="summary_large_image">
+    <script>document.documentElement.classList.add('js');setTimeout(function(){document.documentElement.classList.add('cine-ready');},2500);</script>
+    <link rel="stylesheet" href="/css/safari-theme.css?v=8">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:ital,opsz,wght@1,9..144,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/home/home-cinematic.css?v=9">
+    <link rel="preload" as="image" href="/images/home/hero-1920.webp" imagesrcset="/images/home/hero-960.webp 960w, /images/home/hero-1920.webp 1920w" imagesizes="100vw" fetchpriority="high">
+</head>
+<body class="cinema-home">
+<a class="skip-link" href="#main">Skip to content</a>
+
+<!-- Main Navigation Bar -->
+<nav class="navbar">
+    <div style="display: flex; align-items: center;">
+        <a href="/" class="nav-brand">
+            <!-- Leopard Paw Print SVG -->
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" style="color: var(--color-accent);">
+                <path d="M12 8.5c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3zm-5.5 1c-1.38 0-2.5-1.12-2.5-2.5S5.12 4.5 6.5 4.5 9 5.62 9 7s-1.12 2.5-2.5 2.5zm11 0c-1.38 0-2.5-1.12-2.5-2.5S16.12 4.5 17.5 4.5 20 5.62 20 7s-1.12 2.5-2.5 2.5zM12 11c-3.1 0-5.73 1.55-7.38 3.93-.32.46-.42 1.05-.27 1.59l1.45 3.86c.36.95 1.3 1.58 2.32 1.58.53 0 1.05-.15 1.53-.44L12 20.35l2.4 1.45c.48.29 1 .44 1.53.44 1.01 0 1.96-.63 2.32-1.58l1.45-3.86c.15-.54.05-1.13-.27-1.59C17.73 12.55 15.1 11 12 11z"/>
+            </svg>
+            Wild-Life Safari <span>Sri Lanka</span>
+        </a>
+
+        <!-- Dark / Light Mode Toggle Button -->
+        <button id="themeToggleBtn" class="theme-pill-btn" title="Toggle Theme" aria-label="Toggle Theme" onclick="toggleTheme()">
+            <!-- Sun Icon (Active in Dark Mode) -->
+            <svg id="themeSunIcon" style="display: none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+            <!-- Moon Icon (Active in Light Mode) -->
+            <svg id="themeMoonIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+            Theme
+        </button>
+
+        <!-- NEW: Currency Toggle Button with Swapping Icons -->
+        <button id="currencyToggleBtn" class="theme-pill-btn" style="margin-left: 8px;" title="Switch Currency" onclick="toggleCurrency()">
+            <!-- Banknote Icon (Visible when in USD, clicking switches to LKR) -->
+            <svg id="lkrTargetIcon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                <circle cx="12" cy="12" r="2"></circle>
+                <path d="M6 12h.01M18 12h.01"></path>
+            </svg>
+            <!-- Dollar Icon (Visible when in LKR, clicking switches to USD) -->
+            <svg id="usdTargetIcon" style="display: none;" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+            <span id="currencyBtnText">Switch to LKR</span>
+        </button>
+    </div>
+
+    <!-- Mobile Nav Toggle -->
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation" onclick="document.getElementById('mainNavLinks').classList.toggle('open')">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+
+    <div class="nav-links" id="mainNavLinks">
+        <a href="#destinations" class="nav-link">National Parks</a>
+        <a href="#vehicle" class="nav-link cinema-public">The Vehicle</a>
+        <a href="#experience" class="nav-link cinema-public">Experience</a>
+        <a href="#safariPackages" class="nav-link">Safari Packages</a>
+        <a href="#feedback" class="nav-link cinema-public">Reviews</a>
+        <a href="#book" class="nav-cta cinema-public">Book Now</a>
+        <span id="authNavLinks" style="display: flex; gap: 8px; align-items: center;"></span>
+    </div>
+</nav>
+
+<!-- 01 — CINEMATIC HERO (scroll-scrubbed camera move; static poster without JS) -->
+<header id="main" class="cine-section cine-hero cinema-public" tabindex="-1" aria-labelledby="heroTitle">
+    <div class="cine-hero__media" aria-hidden="true">
+        <img class="cine-hero__poster" data-hero-bg
+             src="/images/home/hero-1920.webp"
+             srcset="/images/home/hero-960.webp 960w, /images/home/hero-1920.webp 1920w"
+             sizes="100vw" width="1920" height="1080" fetchpriority="high"
+             alt="">
+        <video class="cine-hero__video" data-hero-video muted playsinline preload="none" aria-hidden="true"
+               data-src="/videos/home/hero-1080.mp4" data-src-portrait="/videos/home/hero-portrait.mp4"></video>
+        <img class="cine-hero__fg" data-hero-fg
+             src="/images/home/hero-fg-1920.webp"
+             srcset="/images/home/hero-fg-960.webp 960w, /images/home/hero-fg-1920.webp 1920w"
+             sizes="100vw" width="1920" height="1080" alt="">
+        <div class="cine-hero__haze" data-hero-haze></div>
+    </div>
+    <div class="cine-hero__shade" aria-hidden="true"></div>
+    <div class="cine-hero__content">
+        <div class="cine-wrap">
+            <span class="cine-eyebrow" data-hero-in>Sri Lanka &middot; Wildlife Safaris</span>
+            <h1 id="heroTitle" class="cine-hero__title" data-split>Explore<br>the wild<span class="cine-dot">.</span></h1>
+            <p class="cine-hero__sub" data-hero-in>Discover. Experience. Preserve.</p>
+            <p class="cine-hero__support" data-hero-in>Guided safaris through Yala, Wilpattu, Minneriya and Udawalawe, planned, booked and managed on one platform.</p>
+            <div class="cine-actions" data-hero-in>
+                <a href="#destinations" class="cine-btn cine-btn--primary" data-magnetic>
+                    Explore Safaris
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                </a>
+                <a href="#book" class="cine-btn cine-btn--ghost" data-magnetic>Book a Safari</a>
+            </div>
+        </div>
+    </div>
+    <div class="cine-hero__meta" aria-hidden="true">
+        <span>7&deg;N &middot; 81&deg;E</span>
+        <span class="cine-scroll-cue">Scroll <i></i></span>
+    </div>
+</header>
+
+<!-- MAIN ROLE DASHBOARD SECTION (Visible When Logged In) -->
+<section id="dashboardSection" class="section" style="display: none; background: var(--color-bg-light); border-bottom: 1px solid var(--color-border);">
+    <div class="container">
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <div>
+                    <h2 class="section-title" id="dashRoleTitle">Management Dashboard</h2>
+                    <p id="dashRoleSubtitle" style="color: var(--color-text-muted); font-size: 0.9rem;">Manage bookings, workflow states, and operational records.</p>
+                </div>
+            </div>
+
+            <!-- Role Specific Navigation Tabs -->
+            <div class="dashboard-tab-wrapper">
+                <div class="dashboard-nav" id="roleTabNav">
+                    <div class="dashboard-nav-item active" data-tab="customer-bookings" onclick="switchDashboardTab('customer-bookings')">My Bookings</div>
+                    <div class="dashboard-nav-item" data-tab="customer-tickets" onclick="switchDashboardTab('customer-tickets')">Support Requests</div>
+                </div>
+            </div>
+
+            <div class="dashboard-content">
+
+                <!-- CUSTOMER TABS -->
+                <div id="customer-bookings" class="tab-pane">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="font-size: 1.2rem; color: var(--color-primary);">My Safari Bookings</h3>
+                        <a href="#safariPackages" class="btn btn-sm btn-accent">+ New Safari Booking</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Booking Ref</th>
+                                <th>Package / Destination</th>
+                                <th>Safari Date</th>
+                                <th>Guests</th>
+                                <th>Total Price</th>
+                                <th>Current Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="customerBookingsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="customer-tickets" class="tab-pane" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="font-size: 1.2rem; color: var(--color-primary);">Support Requests & Inquiries</h3>
+                        <button class="btn btn-sm btn-primary" onclick="openModal('supportTicketModal')">+ Create Support Request</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Ticket Code</th>
+                                <th>Category</th>
+                                <th>Subject & Message</th>
+                                <th>Status</th>
+                                <th>Staff Response</th>
+                            </tr>
+                            </thead>
+                            <tbody id="customerTicketsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- BOOKING MANAGER TABS -->
+                <div id="manager-pending" class="tab-pane" style="display: none;">
+                    <div style="margin-bottom: 16px;">
+                        <h3 style="font-size: 1.2rem; color: var(--color-primary);">Pending Bookings Review Queue</h3>
+                        <p style="font-size: 0.85rem; color: var(--color-text-muted);">Validate guest details, confirm park slot quotas, and approve or reject reservations.</p>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Booking Ref</th>
+                                <th>Customer</th>
+                                <th>Safari Package</th>
+                                <th>Date & Guests</th>
+                                <th>Total Amount</th>
+                                <th>Status</th>
+                                <th>Validation Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="managerPendingTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB: All Bookings Master List -->
+                <div id="manager-all" class="tab-pane" style="display: none;">
+                    <div class="card">
+                        <div class="card-body">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                                <div>
+                                    <h3 class="card-title">All Bookings Master List</h3>
+                                    <p class="card-desc">Comprehensive view of all bookings including confirmed, rejected, and dispatched trips.</p>
+                                </div>
+                                <!-- UPGRADE: Dual Filter UI (Status + Search) -->
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <select id="masterListStatusFilter" class="form-control" style="width: auto; cursor: pointer; background-color: var(--color-card-bg);" onchange="applyMasterListFilters()">
+                                        <option value="">All Statuses</option>
+                                        <option value="PENDING">Pending Approval</option>
+                                        <option value="APPROVED_AWAITING_PAYMENT">Awaiting Payment</option>
+                                        <option value="CONFIRMED">Confirmed & Paid</option>
+                                        <option value="COMPLETED">Safari Completed</option>
+                                        <option value="REJECTED">Rejected / Cancelled</option>
+                                    </select>
+                                    <input type="text" id="masterListSearchInput" class="form-control" placeholder="Search Ref or Name..." style="max-width: 200px;" onkeyup="applyMasterListFilters()">
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                    <tr>
+                                        <th>BOOKING REF</th>
+                                        <th>CUSTOMER</th>
+                                        <th>SAFARI PACKAGE</th>
+                                        <th>DATE</th>
+                                        <th>TOTAL AMOUNT</th>
+                                        <th>STATUS & ACTIONS</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="managerAllBookingsTableBody">
+                                    <!-- Populated dynamically by JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="manager-tickets" class="tab-pane" style="display: none;">
+                    <div style="margin-bottom: 16px;">
+                        <h3 style="font-size: 1.2rem; color: var(--color-primary);">Customer Support & Inquiries Inbox</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Ticket Code</th>
+                                <th>Customer</th>
+                                <th>Inquiry / Subject</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="managerTicketsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- OPERATIONS MANAGER TABS -->
+                <div id="operations-destinations" class="tab-pane" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="font-size: 1.2rem; color: var(--color-primary);">Safari Destinations Management</h3>
+                        <button class="btn btn-sm btn-primary" onclick="openModal('createDestinationModal')">+ Add New Destination</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Park Name</th>
+                                <th>Province</th>
+                                <th>Operating Hours</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="opsDestinationsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- NEW: Safari Packages Tab -->
+                <div id="operations-packages" class="tab-pane" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div>
+                            <h3 style="font-size: 1.2rem; color: var(--color-primary);">Safari Packages Management</h3>
+                            <p style="font-size: 0.85rem; color: var(--color-text-muted);">Define tour packages, pricing, and link them to destinations.</p>
+                        </div>
+                        <button class="btn btn-sm btn-accent" onclick="openCreatePackageModal()">+ Add Safari Package</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Package Title</th>
+                                <th>Linked Park</th>
+                                <th>Type & Duration</th>
+                                <th>Base Price ($)</th>
+                                <th>Status</th>
+                                <th>Actions</th> <!-- FIX: Added Missing Actions Header -->
+                            </tr>
+                            </thead>
+                            <tbody id="opsPackagesTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="operations-schedules" class="tab-pane" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div>
+                            <h3 style="font-size: 1.2rem; color: var(--color-primary);">Trip Schedules & Slot Capacity</h3>
+                            <p style="font-size: 0.85rem; color: var(--color-text-muted);">Real-time schedule allocation and park entry quota management.</p>
+                        </div>
+                        <button class="btn btn-sm btn-accent" onclick="openModal('createScheduleModal')">+ Add Safari Schedule</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Destination</th>
+                                <th>Package</th>
+                                <th>Schedule Date</th>
+                                <th>Time Slot</th>
+                                <th>Capacity</th>
+                                <th>Status</th>
+                                <th>Actions</th> <!-- FIX: Added Missing Actions Header -->
+                            </tr>
+                            </thead>
+                            <tbody id="opsSchedulesTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- FLEET MANAGER TABS -->
+                <div id="fleet-vehicles" class="tab-pane" style="display: none;">
+
+                    <!-- COMPACT NOTIFICATION BANNER -->
+                    <div id="fleetDispatchNotification" style="display: none; background: rgba(217, 155, 38, 0.08); border: 1px solid rgba(217, 155, 38, 0.2); border-left: 4px solid var(--color-accent); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 24px; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="background: rgba(217, 155, 38, 0.2); color: var(--color-accent); padding: 8px; border-radius: 50%;">
+                                <!-- Notification Bell Icon -->
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                            </div>
+                            <div>
+                                <h4 style="margin: 0; color: var(--color-accent); font-size: 0.95rem;">Action Required: Pending Dispatches</h4>
+                                <p style="margin: 2px 0 0 0; font-size: 0.85rem; color: var(--color-text-muted);">
+                                    You have <strong id="pendingDispatchCount" style="color: var(--color-text-main); font-size: 1rem;">0</strong> paid safaris waiting for a vehicle or guide assignment.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- END NOTIFICATION BANNER -->
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="color: var(--color-primary); margin: 0;">Safari Vehicles & Fleet Registry</h3>
+
+                        <!-- Wrapper to hold both buttons side-by-side -->
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-outline" onclick="openModal('dispatchModal')">Assign Vehicle to Safari</button>
+                            <button class="btn btn-primary" onclick="openModal('createVehicleModal')">+ Add New Vehicle</button>
+                        </div>
+
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Reg Number</th>
+                                <th>Vehicle Model</th>
+                                <th>Capacity</th>
+                                <th>Configuration</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="fleetVehiclesTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="fleet-guides" class="tab-pane" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="font-size: 1.2rem; color: var(--color-primary); margin: 0;">Certified Safari Wildlife Trackers & Guides</h3>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-outline" onclick="openModal('assignGuideModal')">Assign Guide to Safari</button>
+                            <button class="btn btn-primary" onclick="openModal('createGuideModal')">+ Add New Guide</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Guide Name</th>
+                                <th>License Number</th>
+                                <th>Languages</th>
+                                <th>Experience</th>
+                                <th>Status</th>
+                                <th>Actions</th> <!-- NEW ACTIONS COLUMN -->
+                            </tr>
+                            </thead>
+                            <tbody id="fleetGuidesTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- FINANCE MANAGER TABS (FIXED LAYOUT) -->
+                <div id="finance-payments" class="tab-pane" style="display: none;">
+                    <div id="financePendingTransfers" class="finance-pending-banner" role="status" hidden></div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-val" id="statTotalRevenue">$0.00</div>
+                            <div class="stat-label">Total Revenue Collected</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-val" id="statTotalRefunded" style="color: var(--color-danger);">$0.00</div>
+                            <div class="stat-label">Total Refunds Issued</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-val" id="statNetRevenue" style="color: var(--color-success);">$0.00</div>
+                            <div class="stat-label">Net Operating Revenue</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-val" id="statTotalTxns">0</div>
+                            <div class="stat-label">Paid Transactions</div>
+                        </div>
+                    </div>
+
+                    <!-- UPGRADE: Visual Analytics Chart Container -->
+                    <div class="card" style="margin-bottom: 24px; padding: 16px; background: var(--color-card-bg); border: 1px solid var(--color-border); border-radius: var(--radius-md);">
+                        <h3 style="font-size: 1.1rem; color: var(--color-primary); margin-bottom: 16px; margin-top: 0;">7-Day Revenue & Booking Trends</h3>
+                        <div style="position: relative; height: 300px; width: 100%;">
+                            <canvas id="financeTrendChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="font-size: 1.2rem; color: var(--color-primary); margin: 0;">Payment Transactions & Financial Ledger</h3>
+                        <button class="btn btn-sm btn-primary" onclick="downloadFinancialReport()">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right: 6px; vertical-align: text-bottom;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                            Export CSV Report
+                        </button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Transaction Ref</th>
+                                <th>Booking Ref</th>
+                                <th>Amount</th>
+                                <th>Method</th>
+                                <th>Payment Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="financePaymentsTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SYSTEM ADMIN TABS -->
+                <div id="admin-users" class="tab-pane" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <h3 style="font-size: 1.2rem; color: var(--color-primary);">User Accounts & Access Control</h3>
+                        <button class="btn btn-sm btn-primary" onclick="openModal('adminCreateUserModal')">+ Create Staff User</button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Email Address</th>
+                                <th>Assigned Role</th>
+                                <th>Account Status</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="adminUsersTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div id="admin-audit" class="tab-pane" style="display: none;">
+                    <div style="margin-bottom: 16px;">
+                        <h3 style="font-size: 1.2rem; color: var(--color-primary);">System Security & Audit Trail</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Action Type</th>
+                                <th>User</th>
+                                <th>Target Entity</th>
+                                <th>Details</th>
+                            </tr>
+                            </thead>
+                            <tbody id="adminAuditTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 02 — WHERE THE WILD BEGINS -->
+<section class="cine-section cine-origin cinema-public" aria-labelledby="originTitle">
+    <div class="cine-wrap cine-origin__grid">
+        <div>
+            <span class="cine-eyebrow" data-reveal>Destinations</span>
+            <h2 id="originTitle" class="cine-title" data-split>Where the<br>wild begins</h2>
+            <p class="cine-lede" data-reveal>From dense forest to open plains, every journey begins with a destination.</p>
+            <div class="cine-actions" data-reveal>
+                <a href="#destinations" class="cine-btn cine-btn--primary" data-magnetic>
+                    Explore Destinations
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+                </a>
+            </div>
+            <div class="cine-origin__index" data-reveal>
+                <span><strong>Yala</strong>Leopard country</span>
+                <span><strong>Wilpattu</strong>Forest lakes</span>
+                <span><strong>Minneriya</strong>The Gathering</span>
+                <span><strong>Udawalawe</strong>Elephant plains</span>
+            </div>
+        </div>
+        <figure class="cine-origin__frame" data-mask-reveal>
+            <img data-parallax="0.18" loading="lazy" decoding="async"
+                 src="/images/home/destination-1200.webp"
+                 srcset="/images/home/destination-640.webp 640w, /images/home/destination-1200.webp 1200w"
+                 sizes="(max-width: 1024px) 100vw, 58vw" width="1200" height="1600"
+                 alt="Aerial view of a forest reservoir in a Sri Lankan national park with wild elephants along the shore">
+            <video class="cine-origin__video" data-lazy-video muted loop playsinline preload="none"
+                   poster="/images/home/destination-1200.webp" aria-hidden="true">
+                <source data-src="/videos/home/destination.mp4" type="video/mp4">
+            </video>
+            <figcaption class="cine-origin__caption">Dry-zone reservoir, early light</figcaption>
+        </figure>
+    </div>
+</section>
+
+<!-- Destination Highlights -->
+<section id="destinations" class="section cine-photo">
+    <div class="cine-backdrop cine-backdrop--mid" aria-hidden="true">
+        <img data-backdrop src="/images/home/bg-parks-1920.webp" srcset="/images/home/bg-parks-960.webp 960w, /images/home/bg-parks-1920.webp 1920w"
+             sizes="100vw" width="1920" height="1080" loading="lazy" decoding="async" alt="">
+    </div>
+    <div class="container">
+        <h2 class="section-title">Sri Lanka's Premier Wildlife Parks</h2>
+        <p class="section-subtitle">Pristine reserves with distinct ecosystems, legendary big cats, and ancient elephant corridors.</p>
+        <div id="destinationsGrid" class="grid-cards"></div>
+    </div>
+</section>
+
+<!-- 3D VEHICLE — scroll-rotated GLB model (model-viewer loads lazily; poster image without JS) -->
+<section id="vehicle" class="cine-section cine-fleet cinema-public" aria-labelledby="fleetTitle">
+    <div class="cine-fleet__stage" data-fleet-stage>
+        <div class="cine-backdrop cine-backdrop--soft" aria-hidden="true">
+            <img data-backdrop src="/images/home/bg-fleet-1920.webp" srcset="/images/home/bg-fleet-960.webp 960w, /images/home/bg-fleet-1920.webp 1920w"
+                 sizes="100vw" width="1920" height="1080" loading="lazy" decoding="async" alt="">
+        </div>
+        <div class="cine-wrap cine-fleet__grid">
+            <div class="cine-fleet__copy">
+                <span class="cine-eyebrow" data-reveal>The Vehicle</span>
+                <h2 id="fleetTitle" class="cine-title" data-split>Built for<br>the wild</h2>
+                <p class="cine-lede" data-reveal>Every safari runs in an open-top 4&times;4 from our managed fleet, inspected, scheduled and dispatched through the same system you book with.</p>
+                <ol class="cine-fleet__specs" data-fleet-specs>
+                    <li data-spec="0"><strong>Canvas sun canopy</strong><span>Shade overhead, open sides for photography.</span></li>
+                    <li data-spec="1"><strong>Raised tiered seating</strong><span>Every row sees over the one in front.</span></li>
+                    <li data-spec="2"><strong>All-terrain 4&times;4</strong><span>Built for red-earth tracks and river crossings.</span></li>
+                    <li data-spec="3"><strong>Maintained fleet</strong><span>Service records tracked; vehicles under repair are never dispatched.</span></li>
+                </ol>
+            </div>
+            <div class="cine-fleet__viewer" data-fleet-viewer>
+                <div class="cine-fleet__glow" aria-hidden="true"></div>
+                <img class="cine-fleet__poster" src="/images/home/jeep-3d-poster.webp" width="1200" height="900" loading="lazy" decoding="async"
+                     alt="Open-top safari jeep with a canvas canopy, raised tan seats and a rear spare wheel">
+                <p class="cine-fleet__hint" aria-hidden="true">Drag to rotate</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 03 — THE SAFARI EXPERIENCE (pinned chapters) -->
+<section id="experience" class="cine-section cine-exp cinema-public" aria-labelledby="expTitle">
+    <div class="cine-exp__stage" data-exp-stage>
+        <div class="cine-exp__slides" aria-hidden="true">
+            <div class="cine-exp__slide"><img loading="lazy" decoding="async" src="/images/home/exp-vehicle-1600.webp" srcset="/images/home/exp-vehicle-800.webp 800w, /images/home/exp-vehicle-1600.webp 1600w" sizes="100vw" width="1600" height="900" alt=""></div>
+            <div class="cine-exp__slide"><img loading="lazy" decoding="async" src="/images/home/exp-guide-1600.webp" srcset="/images/home/exp-guide-800.webp 800w, /images/home/exp-guide-1600.webp 1600w" sizes="100vw" width="1600" height="900" alt=""></div>
+            <div class="cine-exp__slide"><img loading="lazy" decoding="async" src="/images/home/exp-journey-1600.webp" srcset="/images/home/exp-journey-800.webp 800w, /images/home/exp-journey-1600.webp 1600w" sizes="100vw" width="1600" height="900" alt=""></div>
+            <div class="cine-exp__slide"><img loading="lazy" decoding="async" src="/images/home/exp-wild-1600.webp" srcset="/images/home/exp-wild-800.webp 800w, /images/home/exp-wild-1600.webp 1600w" sizes="100vw" width="1600" height="900" alt=""></div>
+        </div>
+        <div class="cine-exp__head">
+            <div class="cine-wrap">
+                <span class="cine-eyebrow">The Safari Experience</span>
+                <h2 id="expTitle" class="cine-exp__heading">Every detail, in the field.</h2>
+            </div>
+        </div>
+        <div class="cine-exp__copy">
+            <div class="cine-exp__chapters">
+                <article class="cine-exp__chapter">
+                    <img class="cine-exp__chapter-img" loading="lazy" decoding="async" src="/images/home/exp-vehicle-800.webp" width="800" height="450" alt="Open-top safari jeep parked on a forest track as a wild elephant crosses in the mist behind">
+                    <span class="cine-exp__num">01</span>
+                    <h3 class="cine-exp__label">The Vehicle</h3>
+                    <p class="cine-exp__text">Modified open-top 4&times;4s with raised seating, maintained and dispatched by our fleet team so every seat has a clear view.</p>
+                </article>
+                <article class="cine-exp__chapter">
+                    <img class="cine-exp__chapter-img" loading="lazy" decoding="async" src="/images/home/exp-guide-800.webp" width="800" height="450" alt="Safari guide at the jeep as a wild elephant crosses the forest track ahead">
+                    <span class="cine-exp__num">02</span>
+                    <h3 class="cine-exp__label">The Guide</h3>
+                    <p class="cine-exp__text">Certified, multilingual naturalist trackers who read the forest, keep a respectful distance and know where the animals move.</p>
+                </article>
+                <article class="cine-exp__chapter">
+                    <img class="cine-exp__chapter-img" loading="lazy" decoding="async" src="/images/home/exp-journey-800.webp" width="800" height="450" alt="A red-earth safari track through a misty forest with an elephant in the distance">
+                    <span class="cine-exp__num">03</span>
+                    <h3 class="cine-exp__label">The Journey</h3>
+                    <p class="cine-exp__text">Morning, afternoon and full-day drives scheduled around park hours, with seat capacity tracked for every departure.</p>
+                </article>
+                <article class="cine-exp__chapter">
+                    <img class="cine-exp__chapter-img" loading="lazy" decoding="async" src="/images/home/exp-wild-800.webp" width="800" height="450" alt="A wild elephant walking through dusty golden light beside a safari jeep">
+                    <span class="cine-exp__num">04</span>
+                    <h3 class="cine-exp__label">The Wild</h3>
+                    <p class="cine-exp__text">Leopards, elephant herds, sloth bears and hundreds of bird species, seen on their terms, in their habitat.</p>
+                </article>
+            </div>
+        </div>
+        <ol class="cine-exp__progress" aria-hidden="true">
+            <li class="is-active">The Vehicle</li>
+            <li>The Guide</li>
+            <li>The Journey</li>
+            <li>The Wild</li>
+        </ol>
+    </div>
+</section>
+
+<!-- 04 — PLAN YOUR JOURNEY (live data from /api/public/*) -->
+<section id="plan" class="cine-section cine-plan cinema-public" aria-labelledby="planTitle">
+    <div class="cine-backdrop cine-backdrop--mid" aria-hidden="true">
+        <img data-backdrop src="/images/home/bg-plan-1920.webp" srcset="/images/home/bg-plan-960.webp 960w, /images/home/bg-plan-1920.webp 1920w"
+             sizes="100vw" width="1920" height="1080" loading="lazy" decoding="async" alt="">
+    </div>
+    <div class="cine-wrap">
+        <div class="cine-plan__top">
+            <div>
+                <span class="cine-eyebrow" data-reveal>Live availability</span>
+                <h2 id="planTitle" class="cine-title" data-split>Plan your<br>journey</h2>
+            </div>
+            <p class="cine-lede" data-reveal>Figures come straight from our booking system and update as trips fill.</p>
+        </div>
+        <div class="cine-stats" data-reveal>
+            <div class="cine-stat"><div class="cine-stat__val" data-stat="destinations">&ndash;</div><div class="cine-stat__label">Safari destinations</div></div>
+            <div class="cine-stat"><div class="cine-stat__val" data-stat="packages">&ndash;</div><div class="cine-stat__label">Available safari packages</div></div>
+            <div class="cine-stat"><div class="cine-stat__val" data-stat="trips">&ndash;</div><div class="cine-stat__label">Upcoming safari trips</div></div>
+            <div class="cine-stat"><div class="cine-stat__val" data-stat="seats">&ndash;</div><div class="cine-stat__label">Open seats</div></div>
+        </div>
+        <div class="cine-departures" data-reveal>
+            <h3>Next departures</h3>
+            <ul class="cine-dep-list" id="cineDepartures" aria-live="polite">
+                <li class="cine-dep cine-dep--empty">Loading departures&hellip;</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- 05 — YOUR SAFARI STARTS HERE (booking moment, hosts the existing search form) -->
+<section id="book" class="cine-section cine-book cinema-public" aria-labelledby="bookTitle">
+    <div class="cine-book__bg" data-parallax-bg style="background-image: url('/images/home/book-1600.webp');" aria-hidden="true"></div>
+    <div class="cine-wrap">
+        <span class="cine-eyebrow" data-reveal>Booking</span>
+        <h2 id="bookTitle" class="cine-title" data-split>Your safari<br>starts here.</h2>
+        <p class="cine-lede" data-reveal>Choose a destination. Select your journey. Make it yours.</p>
+        <form id="tripSearchForm" class="search-card" data-reveal aria-label="Search safari packages">
+            <div class="form-group">
+                <label for="searchDestination">National Park / Destination</label>
+                <select id="searchDestination" class="form-control">
+                    <option value="">All National Parks</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="searchDate">Safari Date</label>
+                <input type="date" id="searchDate" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="searchGuests">Guests</label>
+                <input type="number" id="searchGuests" class="form-control" value="2" min="1" max="12">
+            </div>
+            <button type="submit" class="btn btn-accent">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                Search Safaris
+            </button>
+        </form>
+        <div class="cine-actions" data-reveal>
+            <a href="#safariPackages" class="cine-btn cine-btn--primary" data-magnetic>
+                View Safari Packages
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+            </a>
+            <a href="#safariPackages" class="cine-btn cine-btn--ghost" data-magnetic>Book Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- Safari Packages Section -->
+<section id="safariPackages" class="section safari-packages-section cine-photo">
+    <div class="cine-backdrop cine-backdrop--mid" aria-hidden="true">
+        <img data-backdrop src="/images/home/bg-packages-1920.webp" srcset="/images/home/bg-packages-960.webp 960w, /images/home/bg-packages-1920.webp 1920w"
+             sizes="100vw" width="1920" height="1080" loading="lazy" decoding="async" alt="">
+    </div>
+    <div class="container">
+        <h2 class="section-title">Available Safari Trips & Packages</h2>
+        <p class="section-subtitle">Select a package, customize options, and reserve your expedition.</p>
+        <div id="packagesGrid" class="grid-cards"></div>
+    </div>
+</section>
+
+<!-- Feedback / Testimonials Section -->
+<section class="section feedback-section cine-photo" id="feedback">
+    <div class="cine-backdrop cine-backdrop--soft" aria-hidden="true">
+        <img data-backdrop src="/images/home/bg-camp-1920.webp" srcset="/images/home/bg-camp-960.webp 960w, /images/home/bg-camp-1920.webp 1920w"
+             sizes="100vw" width="1920" height="1080" loading="lazy" decoding="async" alt="">
+    </div>
+    <div class="container">
+        <div class="feedback-header">
+            <span class="feedback-subtitle">What Explorers Say</span>
+            <h2 class="feedback-title">Real feedback from our guests</h2>
+        </div>
+
+        <div class="feedback-scroll-wrapper">
+            <div class="feedback-track">
+                <div class="feedback-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="review-text">"The Yala safari was an absolute dream. We saw three leopards and our guide was incredibly knowledgeable about the local ecosystem. Highly recommend the full-day package!"</p>
+                    <a href="javascript:void(0)" class="read-more" onclick="openReviewModal('Sarah Jenkins', 'Yala Full-Day Safari', '★★★★★', 'The Yala safari was an absolute dream. We saw three leopards and our guide was incredibly knowledgeable about the local ecosystem.')">Read more...</a>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">SJ</div>
+                        <div class="reviewer-details">
+                            <h4>Sarah Jenkins</h4>
+                            <p>Yala Full-Day Safari</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feedback-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="review-text">"Booking through the platform was seamless. The morning Wilpattu drive was misty and magical. We didn't see leopards, but the elephant gathering made up for it completely."</p>
+                    <a href="javascript:void(0)" class="read-more" onclick="openReviewModal('David M.', 'Wilpattu Morning Expedition', '★★★★★', 'Booking through the platform was seamless. The morning Wilpattu drive was misty and magical.')">Read more...</a>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">DM</div>
+                        <div class="reviewer-details">
+                            <h4>David M.</h4>
+                            <p>Wilpattu Morning Expedition</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feedback-card">
+                    <div class="stars">★★★★★</div>
+                    <p class="review-text">"Fantastic experience from start to finish. The custom 4×4 was comfortable, and our naturalist spotted birds and reptiles we would have completely missed on our own."</p>
+                    <a href="javascript:void(0)" class="read-more" onclick="openReviewModal('Priyanka Silva', 'Custom Birding Tour', '★★★★★', 'Fantastic experience from start to finish. The custom 4×4 was comfortable.')">Read more...</a>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">PS</div>
+                        <div class="reviewer-details">
+                            <h4>Priyanka Silva</h4>
+                            <p>Custom Birding Tour</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="feedback-card">
+                    <div class="stars">★★★★☆</div>
+                    <p class="review-text">"Minneriya was spectacular with hundreds of elephants. The driver was respectful of the animals' space. The booking system kept everything organized and easy to track."</p>
+                    <a href="javascript:void(0)" class="read-more" onclick="openReviewModal('Marcus T.', 'Minneriya Gathering', '★★★★☆', 'Minneriya was spectacular with hundreds of elephants.')">Read more...</a>
+                    <div class="reviewer-info">
+                        <div class="reviewer-avatar">MT</div>
+                        <div class="reviewer-details">
+                            <h4>Marcus T.</h4>
+                            <p>Minneriya Gathering</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 06 — FINAL CINEMATIC CTA -->
+<section class="cine-section cine-final cinema-public" aria-labelledby="finalTitle">
+    <div class="cine-final__media" aria-hidden="true">
+        <img data-final-img loading="lazy" decoding="async"
+             src="/images/home/sunset-1920.webp"
+             srcset="/images/home/sunset-960.webp 960w, /images/home/sunset-1920.webp 1920w"
+             sizes="100vw" width="1920" height="1080" alt="">
+        <video class="cine-final__video" data-final-video muted playsinline preload="none" aria-hidden="true"
+               poster="/images/home/sunset-1920.webp">
+            <source data-src="/videos/home/sunset.mp4" type="video/mp4">
+        </video>
+        <div class="cine-final__fade"></div>
+    </div>
+    <div class="cine-wrap">
+        <h2 id="finalTitle" class="cine-final__title" data-split>Step into<br>the wild<span class="cine-dot">.</span></h2>
+        <p class="cine-final__sub" data-final-in>Your next adventure is waiting.</p>
+        <div class="cine-actions" data-final-in th:if="${currentUser == null}">
+            <a href="/register" class="cine-btn cine-btn--primary" data-magnetic>
+                Start Your Journey
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+            </a>
+            <a href="/login" class="cine-btn cine-btn--ghost" data-magnetic>Login</a>
+        </div>
+        <div class="cine-actions" data-final-in th:unless="${currentUser == null}">
+            <a href="#safariPackages" class="cine-btn cine-btn--primary" data-magnetic>
+                Start Your Journey
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+            </a>
+            <a href="/dashboard" class="cine-btn cine-btn--ghost" data-magnetic>My Dashboard</a>
+        </div>
+    </div>
+</section>
+
+<!-- Floating Help & Feedback Button -->
+<button class="floating-help-btn" onclick="openModal('helpFeedbackModal')">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+    Help / Feedback
+</button>
+
+<!-- MODAL: Help & Feedback -->
+<div id="helpFeedbackModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Share Feedback or Get Help</h3>
+            <button class="modal-close" onclick="closeModal('helpFeedbackModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Inquiry Type *</label>
+                <select id="userFbType" class="form-control">
+                    <option value="TOUR_FEEDBACK">Safari Tour Review & Rating</option>
+                    <option value="BOOKING_HELP">Booking Assistance / Help</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Your Feedback or Help Request *</label>
+                <textarea id="userFbMessage" class="form-control" rows="4" placeholder="Write your review or questions here..." required></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('helpFeedbackModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitUserFeedback()">Submit Feedback</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Full Review Reader -->
+<div id="readReviewModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <div>
+                <h3 class="modal-title" id="revModalAuthor">Guest Review</h3>
+                <small id="revModalTour" style="color: var(--color-accent); font-weight: 600;"></small>
+            </div>
+            <button class="modal-close" onclick="closeModal('readReviewModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="revModalStars" style="color: var(--color-accent); font-size: 1.4rem; margin-bottom: 12px;">★★★★★</div>
+            <p id="revModalContent" style="font-size: 1.05rem; line-height: 1.7; color: var(--color-text-main);"></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" onclick="closeModal('readReviewModal')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Booking Customization Wizard -->
+<div id="bookingWizardModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <div>
+                <h3 class="modal-title" id="wizPackageTitle">Package Customization</h3>
+                <small id="wizDuration" style="color: var(--color-accent-hover); font-weight: 600;"></small>
+            </div>
+            <button class="modal-close" onclick="closeModal('bookingWizardModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Select Safari Schedule Date & Time Slot *</label>
+                <select id="wizScheduleSelect" class="form-control" onchange="recalculateWizardTotal()" required></select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+                <div class="form-group">
+                    <label>Adult Guests (12+ yrs) *</label>
+                    <input type="number" id="wizAdults" class="form-control" value="2" min="1" max="10" oninput="recalculateWizardTotal()" required>
+                </div>
+                <div class="form-group">
+                    <label>Children (Under 12 yrs, 50% off)</label>
+                    <input type="number" id="wizChildren" class="form-control" value="0" min="0" max="6" oninput="recalculateWizardTotal()">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+                <label style="font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); display: block; margin-bottom: 8px;">
+                    Customize Safari Add-ons & Gear
+                </label>
+                <div id="wizAddonsList"></div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Special Requests (Dietary, Photography, Pickup notes)</label>
+                <textarea id="wizRequests" class="form-control" rows="2" placeholder="e.g. Vegetarian meal request, telephoto lens bean-bag support"></textarea>
+            </div>
+
+            <div style="background: var(--color-bg-light); padding: 14px; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <span style="font-size: 0.85rem; color: var(--color-text-muted);">Estimated Total Amount:</span>
+                    <div id="wizTotalAmount" style="font-size: 1.5rem; font-weight: 800; color: var(--color-primary);">$0.00</div>
+                    <small id="wizSeasonNote" class="season-note">Standard season pricing</small>
+                </div>
+                <small style="color: var(--color-text-muted); text-align: right;">Includes park entry & taxes<br>Base: <span id="wizBasePrice">$0</span>/adult</small>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('bookingWizardModal')">Cancel</button>
+            <button class="btn btn-accent" onclick="submitBooking()">Confirm & Submit Booking</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Payment Checkout -->
+<div id="paymentModal" class="modal-overlay">
+    <div class="modal-dialog pay-dialog" role="dialog" aria-modal="true" aria-labelledby="payTitle">
+        <div class="modal-header pay-header">
+            <div>
+                <div id="payTitle" class="pay-merchant">Wild-Life Safari Co.</div>
+                <div class="pay-secure">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Secure checkout
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeModal('paymentModal')" aria-label="Close payment window">&times;</button>
+        </div>
+        <div class="modal-body pay-body">
+
+            <!-- Booking reference & amount -->
+            <div class="pay-summary">
+                <div>
+                    <span class="pay-summary-label">Booking Ref: <strong id="payBookingRef"></strong></span>
+                    <span class="pay-summary-due">Total amount due</span>
+                </div>
+                <span id="payAmount" class="pay-summary-amount">$0.00</span>
+            </div>
+
+            <!-- Payment method selector -->
+            <div class="pay-methods" role="tablist" aria-label="Payment method">
+                <button type="button" class="pay-method is-active" role="tab" aria-selected="true" data-pay-method="CARD" onclick="selectPaymentMethod('CARD')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+                    <span>Card</span>
+                </button>
+                <button type="button" class="pay-method" role="tab" aria-selected="false" data-pay-method="LANKAQR" onclick="selectPaymentMethod('LANKAQR')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3h-3zM17 17h4v4h-4z"/></svg>
+                    <span>LankaQR</span>
+                </button>
+                <button type="button" class="pay-method" role="tab" aria-selected="false" data-pay-method="WALLET" onclick="selectPaymentMethod('WALLET')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/></svg>
+                    <span>Mobile wallet</span>
+                </button>
+                <button type="button" class="pay-method" role="tab" aria-selected="false" data-pay-method="BANK_TRANSFER" onclick="selectPaymentMethod('BANK_TRANSFER')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M3 10h18L12 4 3 10z"/><path d="M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg>
+                    <span>Bank transfer</span>
+                </button>
+            </div>
+
+            <!-- 1. CARD -->
+            <form id="cardPaymentSection" class="pay-panel" data-pay-panel="CARD" onsubmit="event.preventDefault(); submitPayment('CARD');">
+                <div class="pay-brands" aria-label="Accepted cards">
+                    <span class="pay-brand" style="background:#1a1f71;color:#fff;font-style:italic;">VISA</span>
+                    <span class="pay-brand" style="background:#252525;"><i style="background:#eb001b;"></i><i style="background:#f79e1b;margin-left:-6px;"></i></span>
+                    <span class="pay-brand" style="background:#0077a6;color:#fff;">AMEX</span>
+                    <span class="pay-brand" style="background:#fff;color:#004b87;border:1px solid #ccc;">DINERS</span>
+                    <span class="pay-brand" style="background:#fff;color:#e55c20;border:1px solid #ccc;">DISCOVER</span>
+                    <span class="pay-brand" style="background:#00888a;color:#fff;">UnionPay</span>
+                </div>
+                <div class="form-group pay-field">
+                    <label for="payHolder">Name on card</label>
+                    <input type="text" id="payHolder" class="form-control" placeholder="e.g. R. Y. Subasinghe" autocomplete="cc-name" required>
+                </div>
+                <div class="form-group pay-field">
+                    <label for="payCardNumber">Card number</label>
+                    <input type="text" id="payCardNumber" class="form-control" placeholder="4532 •••• •••• ••••" inputmode="numeric" autocomplete="cc-number" maxlength="23" oninput="formatCardNumber(this)" required>
+                </div>
+                <div class="pay-grid-2">
+                    <div class="form-group pay-field">
+                        <label for="payExpiry">Expiry (MM/YY)</label>
+                        <input type="text" id="payExpiry" class="form-control" placeholder="MM/YY" inputmode="numeric" autocomplete="cc-exp" maxlength="5" oninput="formatExpiry(this)" required>
+                    </div>
+                    <div class="form-group pay-field">
+                        <label for="payCvv">CVC</label>
+                        <input type="password" id="payCvv" class="form-control" placeholder="123" inputmode="numeric" autocomplete="cc-csc" minlength="3" maxlength="4" required>
+                    </div>
+                </div>
+                <button type="submit" class="pay-submit" data-pay-submit>Pay <span data-pay-amount></span></button>
+            </form>
+
+            <!-- 2. LANKAQR -->
+            <div id="qrPaymentSection" class="pay-panel" data-pay-panel="LANKAQR" hidden>
+                <p class="pay-panel-title">Scan with any LankaQR banking app</p>
+                <p class="pay-panel-note">Sampath Vishwa, Genie, FriMi, BOC Smart, ComBank Q+ and other LANKAQR apps.</p>
+                <div class="pay-qr-wrap">
+                    <div id="payQrCode" class="pay-qr" aria-label="Payment QR code"></div>
+                    <div class="pay-qr-meta">Pay <strong data-pay-amount></strong><br>Reference <strong data-pay-ref></strong></div>
+                </div>
+                <div class="form-group pay-field">
+                    <label for="payQrRef">Reference number shown in your app (optional)</label>
+                    <input type="text" id="payQrRef" class="form-control" placeholder="e.g. 552019838812" maxlength="40">
+                </div>
+                <button type="button" class="pay-submit" data-pay-submit onclick="submitPayment('LANKAQR')">I have completed the payment</button>
+            </div>
+
+            <!-- 3. MOBILE WALLET -->
+            <form id="walletPaymentSection" class="pay-panel" data-pay-panel="WALLET" hidden onsubmit="event.preventDefault(); submitPayment('WALLET');">
+                <p class="pay-panel-title">Pay from your mobile wallet</p>
+                <div class="pay-wallets" role="radiogroup" aria-label="Wallet provider">
+                    <label class="pay-wallet"><input type="radio" name="payWalletProvider" value="EZCASH" checked><span class="pay-wallet-name">eZ Cash</span><small>Dialog</small></label>
+                    <label class="pay-wallet"><input type="radio" name="payWalletProvider" value="MCASH"><span class="pay-wallet-name">mCash</span><small>Mobitel</small></label>
+                    <label class="pay-wallet"><input type="radio" name="payWalletProvider" value="GENIE"><span class="pay-wallet-name">Genie</span><small>Dialog</small></label>
+                </div>
+                <div class="form-group pay-field">
+                    <label for="payWalletMobile">Mobile number registered with the wallet</label>
+                    <div class="pay-inline">
+                        <input type="tel" id="payWalletMobile" class="form-control" placeholder="077 123 4567" inputmode="tel" autocomplete="tel" maxlength="15">
+                        <button type="button" id="payWalletOtpBtn" class="pay-secondary" onclick="sendWalletOtp()">Send code</button>
+                    </div>
+                </div>
+                <div id="payWalletOtpRow" class="form-group pay-field" hidden>
+                    <label for="payWalletOtp">6-digit one-time password</label>
+                    <input type="text" id="payWalletOtp" class="form-control pay-otp" placeholder="••••••" inputmode="numeric" autocomplete="one-time-code" maxlength="6">
+                    <small class="pay-hint">Demo system: no SMS is sent. Any 6 digits work; 000000 simulates a declined payment.</small>
+                </div>
+                <button type="submit" class="pay-submit" data-pay-submit id="payWalletSubmit" disabled>Pay <span data-pay-amount></span></button>
+            </form>
+
+            <!-- 4. BANK TRANSFER -->
+            <form id="bankPaymentSection" class="pay-panel" data-pay-panel="BANK_TRANSFER" hidden onsubmit="event.preventDefault(); submitPayment('BANK_TRANSFER');">
+                <p class="pay-panel-title">Transfer to our bank account</p>
+                <!-- Update these details with the company's real bank account before going live -->
+                <dl class="pay-bank-details">
+                    <dt>Account name</dt><dd>Wild-Life Safari Co. (Pvt) Ltd</dd>
+                    <dt>Bank / branch</dt><dd>Sampath Bank PLC, Colombo Super Branch</dd>
+                    <dt>Account number</dt><dd>0029 1000 4512</dd>
+                    <dt>Amount</dt><dd><strong data-pay-amount></strong></dd>
+                    <dt>Use reference</dt><dd><strong data-pay-ref></strong></dd>
+                </dl>
+                <div class="pay-grid-2">
+                    <div class="form-group pay-field">
+                        <label for="payBankName">Bank you paid from</label>
+                        <select id="payBankName" class="form-control" required>
+                            <option value="">Select bank</option>
+                            <option>Sampath Bank</option>
+                            <option>Commercial Bank</option>
+                            <option>Bank of Ceylon</option>
+                            <option>People's Bank</option>
+                            <option>Hatton National Bank</option>
+                            <option>Seylan Bank</option>
+                            <option>NDB Bank</option>
+                            <option>DFCC Bank</option>
+                            <option>Nations Trust Bank</option>
+                            <option>Other / overseas bank</option>
+                        </select>
+                    </div>
+                    <div class="form-group pay-field">
+                        <label for="payTransferRef">Transfer reference number</label>
+                        <input type="text" id="payTransferRef" class="form-control" placeholder="e.g. TRF20261001889" maxlength="30" required>
+                    </div>
+                </div>
+                <p class="pay-hint">Your booking is confirmed as soon as our finance team verifies the transfer, usually within one working day.</p>
+                <button type="submit" class="pay-submit" data-pay-submit>Submit transfer details</button>
+            </form>
+
+            <div class="pay-footer">
+                <span>Securely processed and powered by</span>
+                <strong>BANCSTAC</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Advanced Payment & Deposit Receipt -->
+<div id="advanceReceiptModal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 600px; border-top: 5px solid #009688;">
+        <div class="modal-header" style="background: #fdfcfb; border-bottom: 1px solid var(--color-border); padding: 16px 24px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                <div>
+                    <div style="font-weight: 800; font-size: 1.1rem; color: #1e3a2f;">Sri Lanka Wild-Life Safari Co.</div>
+                    <div style="font-size: 0.75rem; color: #555555;">Official Advance Payment & Deposit Voucher</div>
+                </div>
+                <div style="text-align: right;">
+                    <span style="background: #e0f2f1; color: #00695c; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 700;">ADVANCE DEPOSIT PAID</span>
+                </div>
+            </div>
+            <button class="modal-close" onclick="closeModal('advanceReceiptModal')" style="margin-left: 12px;">&times;</button>
+        </div>
+        <div class="modal-body" id="printableAdvanceReceipt" style="background: #ffffff; color: #222222; padding: 24px;">
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px dashed #dcdad5;">
+                <div>
+                    <span style="font-size: 0.8rem; color: #777;">Gateway Provider:</span>
+                    <div style="font-weight: 700; font-size: 0.9rem; color: #d96b27;">BANCSTAC / Sampath Bank PayCorp</div>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 0.8rem; color: #777;">Date & Time:</span>
+                    <div id="advRecDate" style="font-weight: 600; font-size: 0.9rem; color: #333;"></div>
+                </div>
+            </div>
+
+            <div style="background: #f8f9fa; border: 1px solid #e2ddd5; border-radius: 6px; padding: 16px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem;">
+                    <span style="color: #666;">Booking Reference:</span>
+                    <strong id="advRecBookingRef" style="color: #1e3a2f;"></strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem;">
+                    <span style="color: #666;">Transaction Reference:</span>
+                    <strong id="advRecTxnRef" style="color: #1e3a2f;"></strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem;">
+                    <span style="color: #666;">Payment Method:</span>
+                    <span id="advRecMethod">Visa / LankaQR</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.9rem;">
+                    <span style="color: #666;">Total Package Cost:</span>
+                    <span id="advRecTotalCost" style="font-weight: 600;">$0.00</span>
+                </div>
+            </div>
+
+            <div style="border-top: 1px solid #e2ddd5; border-bottom: 2px solid #1e3a2f; padding: 14px 0; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 1rem;">
+                    <span style="font-weight: 700; color: #00695c;">Advance Deposit Paid:</span>
+                    <span id="advRecPaidAmount" style="font-weight: 800; color: #00695c; font-size: 1.1rem;">$0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 1rem;">
+                    <span style="font-weight: 700; color: #c0392b;">Remaining Balance Due (At Park Gate):</span>
+                    <span id="advRecBalanceDue" style="font-weight: 800; color: #c0392b; font-size: 1.1rem;">$0.00</span>
+                </div>
+            </div>
+
+            <div style="background: #fff8e1; border-left: 4px solid #f5ba42; padding: 10px 14px; font-size: 0.82rem; color: #5d4037; border-radius: 0 4px 4px 0;">
+                <strong>Notice:</strong> Please present this advance deposit receipt along with your booking reference at the park entrance gate. The remaining balance can be settled upon arrival.
+            </div>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between;">
+            <div style="display: flex; gap: 10px;">
+                <!-- Existing Print Button -->
+                <button class="btn btn-accent" onclick="window.print()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 5px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                    Print Receipt
+                </button>
+
+                <!-- NEW: Direct PDF Download Button -->
+                <a id="downloadAdvPdfBtn" href="#" class="btn" style="background: #ffffff; color: #1e3a2f; font-weight: 700; display: flex; align-items: center; text-decoration: none; padding: 8px 16px; border-radius: 6px;" download>
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 5px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download PDF
+                </a>
+            </div>
+
+            <button class="btn btn-primary" onclick="closeModal('advanceReceiptModal')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Printable Receipt -->
+<div id="receiptModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Payment Receipt & Voucher</h3>
+            <button class="modal-close" onclick="closeModal('receiptModal')">&times;</button>
+        </div>
+        <div class="modal-body" id="printableReceipt">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h2 style="color: var(--color-primary);">Sri Lanka Wild-Life Safari Co.</h2>
+                <p style="font-size: 0.85rem; color: var(--color-text-muted);">Official Tax Invoice & Travel Voucher</p>
+                <span class="card-badge badge-confirmed" style="margin-top: 6px;">PAID & CONFIRMED</span>
+            </div>
+            <div style="border-top: 1px dashed var(--color-border); border-bottom: 1px dashed var(--color-border); padding: 14px 0; margin-bottom: 16px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span>Receipt Number:</span>
+                    <strong id="recNumber">REC-SLS-00000</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span>Issued Date:</span>
+                    <span id="recDate"></span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span>Net Subtotal:</span>
+                    <span id="recSubtotal">$0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span>VAT & Tourism Tax (8%):</span>
+                    <span id="recTax">$0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 700; color: var(--color-primary); margin-top: 8px;">
+                    <span>Total Paid:</span>
+                    <span id="recTotal">$0.00</span>
+                </div>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--color-text-muted); text-align: center;">
+                Please present this official electronic voucher upon check-in at the park entrance gate.
+            </p>
+        </div>
+        <div class="modal-footer" style="justify-content: space-between;">
+            <div style="display: flex; gap: 10px;">
+                <!-- Existing Browser Print Button -->
+                <button class="btn btn-accent" onclick="window.print()">
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 5px;"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                    Print Receipt
+                </button>
+
+                <!-- NEW: Direct PDF Download Button -->
+                <a id="downloadPdfBtn" href="#" class="btn btn-outline" style="display: flex; align-items: center; text-decoration: none;" download>
+                    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="vertical-align: middle; margin-right: 5px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download PDF
+                </a>
+            </div>
+
+            <button class="btn btn-primary" onclick="closeModal('receiptModal')">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Reject Booking Reason -->
+<div id="rejectBookingModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Reject Safari Booking</h3>
+            <button class="modal-close" onclick="closeModal('rejectBookingModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="margin-bottom: 12px;">Booking Reference: <strong id="rejectRefText"></strong></p>
+            <div class="form-group">
+                <label>Mandatory Rejection Reason *</label>
+                <textarea id="rejectReasonText" class="form-control" rows="3" placeholder="State reason, e.g. Slot capacity exhausted or weather advisory closure"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('rejectBookingModal')">Cancel</button>
+            <button class="btn btn-secondary" onclick="submitRejectBooking()">Confirm Rejection</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Create Support Ticket -->
+<div id="supportTicketModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Submit Support Request / Inquiry</h3>
+            <button class="modal-close" onclick="closeModal('supportTicketModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Request Category</label>
+                <select id="tckCategory" class="form-control">
+                    <option value="INQUIRY">General Inquiry</option>
+                    <option value="COMPLAINT">Service Complaint</option>
+                    <option value="BOOKING_CHANGE">Trip Rescheduling</option>
+                    <option value="GENERAL">General Support</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Subject *</label>
+                <input type="text" id="tckSubject" class="form-control" placeholder="e.g. Hotel transfer arrangement inquiry" required>
+            </div>
+            <div class="form-group">
+                <label>Details / Message *</label>
+                <textarea id="tckDesc" class="form-control" rows="4" placeholder="Explain your request or inquiry in detail" required></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('supportTicketModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitSupportTicket()">Submit Request</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Respond Support Ticket -->
+<div id="respondTicketModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Reply to Customer Request</h3>
+            <button class="modal-close" onclick="closeModal('respondTicketModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="margin-bottom: 12px;">Ticket: <strong id="respTicketCode"></strong></p>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Response Message *</label>
+                <textarea id="respTicketText" class="form-control" rows="3" placeholder="Enter formal resolution message" required></textarea>
+            </div>
+            <div class="form-group">
+                <label>Update Ticket Status</label>
+                <select id="respTicketStatus" class="form-control">
+                    <option value="RESOLVED">Resolve Ticket (RESOLVED)</option>
+                    <option value="IN_PROGRESS">Mark In Progress</option>
+                    <option value="REJECTED">Decline Request</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('respondTicketModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitTicketResponse()">Send Response</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Edit Support Ticket -->
+<div id="editTicketModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Support Request</h3>
+            <button class="modal-close" onclick="closeModal('editTicketModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editTckId">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Category *</label>
+                <select id="editTckCategory" class="form-control" required>
+                    <option value="INQUIRY">General Inquiry</option>
+                    <option value="BOOKING_CHANGE">Booking Change</option>
+                    <option value="PAYMENT_ISSUE">Payment Issue</option>
+                    <option value="COMPLAINT">Complaint</option>
+                </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Subject *</label>
+                <input type="text" id="editTckSubject" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label>Message / Description *</label>
+                <textarea id="editTckDesc" class="form-control" rows="4" required></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('editTicketModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitEditTicket()">Update Ticket</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Add Destination -->
+<div id="createDestinationModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Add Safari Destination</h3>
+            <button class="modal-close" onclick="closeModal('createDestinationModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Park / Destination Name *</label>
+                <input type="text" id="newDestName" class="form-control" placeholder="e.g. Kumana National Park" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Province *</label>
+                <input type="text" id="newDestProvince" class="form-control" placeholder="e.g. Eastern Province" required>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="newDestDesc" class="form-control" rows="3" placeholder="Overview of wildlife diversity and terrain"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('createDestinationModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitCreateDestination()">Save Destination</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Edit Destination -->
+<div id="editDestinationModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Safari Destination</h3>
+            <button class="modal-close" onclick="closeModal('editDestinationModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editDestId">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Park Name *</label>
+                <input type="text" id="editDestName" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Province *</label>
+                <input type="text" id="editDestProvince" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Image URL</label>
+                <input type="text" id="editDestImage" class="form-control" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="editDestDesc" class="form-control" rows="4"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('editDestinationModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitEditDestination()">Update Destination</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Add Safari Package -->
+<div id="createPackageModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Create New Safari Package</h3>
+            <button class="modal-close" onclick="closeModal('createPackageModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Package Title *</label>
+                <input type="text" id="newPkgTitle" class="form-control" placeholder="e.g. Horton Plains Sunrise Trail" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Link to Destination *</label>
+                <select id="newPkgDestSelect" class="form-control" required></select>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 12px;">
+                <div class="form-group">
+                    <label>Safari Type *</label>
+                    <select id="newPkgType" class="form-control">
+                        <option value="MORNING">Morning Half-Day</option>
+                        <option value="AFTERNOON">Afternoon Half-Day</option>
+                        <option value="FULL_DAY">Full-Day Expedition</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Duration (Hours) *</label>
+                    <input type="number" id="newPkgDuration" class="form-control" value="4" min="1" required>
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Base Price per Adult ($) *</label>
+                <input type="number" id="newPkgPrice" class="form-control" placeholder="85.00" step="0.01" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Description & Inclusions</label>
+                <textarea id="newPkgDesc" class="form-control" rows="3" placeholder="Brief description of the experience and what is included..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('createPackageModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitCreatePackage()">Save Package</button>
+        </div>
+    </div>
+</div>
+
+<!-- ================= EDIT PACKAGE MODAL (MATCHED THEME) ================= -->
+<div id="editPackageModal" style="display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.75); backdrop-filter: blur(2px); align-items: center; justify-content: center;">
+    <div style="background-color: #13221b; border: 1px solid #1f3328; border-radius: 12px; width: 90%; max-width: 600px; padding: 24px; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.6);">
+
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="color: #4ade80; margin: 0; font-size: 1.25rem; font-weight: 600;">Edit Safari Package</h3>
+            <span style="cursor: pointer; font-size: 1.4rem; color: #94a3b8;" onclick="document.getElementById('editPackageModal').style.display='none'">&times;</span>
+        </div>
+
+        <!-- Form Inputs -->
+        <div style="display: flex; flex-direction: column; gap: 14px;">
+            <input type="hidden" id="editPkgId">
+
+            <div>
+                <label style="color: #d1d5db; font-size: 0.85rem; margin-bottom: 5px; display: block;">Package Title *</label>
+                <input type="text" id="editPkgTitle" style="width: 100%; padding: 10px 12px; border-radius: 6px; background: #0b1410; border: 1px solid #1e3327; color: #f3f4f6; box-sizing: border-box; outline: none;">
+            </div>
+
+            <div>
+                <label style="color: #d1d5db; font-size: 0.85rem; margin-bottom: 5px; display: block;">Linked National Park *</label>
+                <select id="editPkgDestSelect" style="width: 100%; padding: 10px 12px; border-radius: 6px; background: #0b1410; border: 1px solid #1e3327; color: #f3f4f6; box-sizing: border-box; outline: none;"></select>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div>
+                    <label style="color: #d1d5db; font-size: 0.85rem; margin-bottom: 5px; display: block;">Safari Type</label>
+                    <select id="editPkgType" style="width: 100%; padding: 10px 12px; border-radius: 6px; background: #0b1410; border: 1px solid #1e3327; color: #f3f4f6; box-sizing: border-box; outline: none;">
+                        <option value="MORNING">MORNING Safari</option>
+                        <option value="AFTERNOON">AFTERNOON Safari</option>
+                        <option value="FULL_DAY">FULL DAY Expedition</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="color: #d1d5db; font-size: 0.85rem; margin-bottom: 5px; display: block;">Duration (Hours)</label>
+                    <input type="number" id="editPkgDuration" style="width: 100%; padding: 10px 12px; border-radius: 6px; background: #0b1410; border: 1px solid #1e3327; color: #f3f4f6; box-sizing: border-box; outline: none;">
+                </div>
+            </div>
+
+            <div>
+                <label style="color: #d1d5db; font-size: 0.85rem; margin-bottom: 5px; display: block;">Base Price ($) per Adult *</label>
+                <input type="number" id="editPkgPrice" step="0.01" style="width: 100%; padding: 10px 12px; border-radius: 6px; background: #0b1410; border: 1px solid #1e3327; color: #f3f4f6; box-sizing: border-box; outline: none;">
+            </div>
+
+            <div>
+                <label style="color: #d1d5db; font-size: 0.85rem; margin-bottom: 5px; display: block;">Description</label>
+                <textarea id="editPkgDesc" rows="3" style="width: 100%; padding: 10px 12px; border-radius: 6px; background: #0b1410; border: 1px solid #1e3327; color: #f3f4f6; box-sizing: border-box; outline: none; font-family: inherit;"></textarea>
+            </div>
+
+            <div>
+                <label style="color: #d1d5db; font-size: 0.85rem; margin-bottom: 5px; display: block;">Inclusions</label>
+                <input type="text" id="editPkgInclusions" style="width: 100%; padding: 10px 12px; border-radius: 6px; background: #0b1410; border: 1px solid #1e3327; color: #f3f4f6; box-sizing: border-box; outline: none;">
+            </div>
+        </div>
+
+        <!-- Footer Action Buttons -->
+        <div style="display: flex; justify-content: flex-end; align-items: center; gap: 12px; margin-top: 20px;">
+            <button type="button" style="background: transparent; border: none; color: #f3f4f6; font-weight: 500; font-size: 0.95rem; cursor: pointer; padding: 8px 14px;" onclick="document.getElementById('editPackageModal').style.display='none'">Cancel</button>
+            <button type="button" style="padding: 10px 18px; border-radius: 6px; background-color: #5eead4; color: #064e3b; border: none; cursor: pointer; font-weight: 600; font-size: 0.95rem;" onclick="submitEditPackage()">Save Changes</button>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL: Add Schedule -->
+<div id="createScheduleModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Schedule Safari Trip & Slots</h3>
+            <button class="modal-close" onclick="closeModal('createScheduleModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Destination *</label>
+                <select id="schedDestSelect" class="form-control" required></select>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Package *</label>
+                <select id="schedPkgSelect" class="form-control" required></select>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Schedule Date *</label>
+                <input type="date" id="schedDate" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Time Slot *</label>
+                <select id="schedSlot" class="form-control" required>
+                    <option value="MORNING_0600">Morning (06:00 AM - 10:00 AM)</option>
+                    <option value="AFTERNOON_1430">Afternoon (02:30 PM - 06:30 PM)</option>
+                    <option value="FULL_DAY_0600">Full Day (06:00 AM - 06:00 PM)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Max Guest Slot Capacity</label>
+                <input type="number" id="schedMaxSlots" class="form-control" value="20" min="1" max="40">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('createScheduleModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitCreateSchedule()">Publish Schedule</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Edit Customer Booking -->
+<div id="editBookingModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Safari Reservation</h3>
+            <button class="modal-close" type="button" onclick="closeModal('editBookingModal')">&times;</button>
+        </div>
+        <form onsubmit="event.preventDefault(); submitEditBooking();">
+            <div class="modal-body">
+                <input type="hidden" id="editBookingId">
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label>Safari Date *</label>
+                    <input type="date" id="editBookingDate" class="form-control" required>
+                </div>
+                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>Adult Guests *</label>
+                        <input type="number" id="editBookingAdults" class="form-control" min="1" max="10" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>Child Guests</label>
+                        <input type="number" id="editBookingChildren" class="form-control" min="0" max="6">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Special Requests / Notes</label>
+                    <textarea id="editBookingRequests" class="form-control" rows="3"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="closeModal('editBookingModal')">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Reservation</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: Record Maintenance -->
+<div id="recordMaintenanceModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Record Vehicle Maintenance</h3>
+            <button class="modal-close" onclick="closeModal('recordMaintenanceModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="margin-bottom: 12px;">Vehicle: <strong id="maintVehicleReg"></strong></p>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Maintenance Type *</label>
+                <input type="text" id="maintType" class="form-control" placeholder="e.g. Brake inspection, suspension service" required>
+            </div>
+            <div class="form-group">
+                <label>Description & Repairs</label>
+                <textarea id="maintDesc" class="form-control" rows="3" placeholder="Technical maintenance notes"></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('recordMaintenanceModal')">Cancel</button>
+            <button class="btn btn-secondary" onclick="submitRecordMaintenance()">Confirm Maintenance Status</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Add New Vehicle -->
+<div id="createVehicleModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Add Safari Vehicle</h3>
+            <button class="modal-close" onclick="closeModal('createVehicleModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Registration Number *</label>
+                <input type="text" id="newVehReg" class="form-control" placeholder="e.g. WP-SP-9999" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Vehicle Model *</label>
+                <input type="text" id="newVehModel" class="form-control" placeholder="e.g. Toyota Land Cruiser" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Model Year *</label>
+                <input type="number" id="newVehYear" class="form-control" placeholder="2020" min="1990" max="2027" required>
+            </div>
+            <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Seating Capacity</label>
+                    <input type="number" id="newVehSeats" class="form-control" value="6" min="1" max="12" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Air Conditioned?</label>
+                    <select id="newVehAc" class="form-control">
+                        <option value="true">Yes (A/C)</option>
+                        <option value="false">Open-Top (No A/C)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('createVehicleModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitCreateVehicle()">Save Vehicle</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Edit Safari Vehicle -->
+<div id="editVehicleModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Safari Vehicle</h3>
+            <button class="modal-close" onclick="closeModal('editVehicleModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editVehId">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Registration Number *</label>
+                <input type="text" id="editVehReg" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Vehicle Model *</label>
+                <input type="text" id="editVehModel" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Model Year *</label>
+                <input type="number" id="editVehYear" class="form-control" min="1990" max="2027" required>
+            </div>
+            <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                <div class="form-group" style="flex: 1;">
+                    <label>Seating Capacity</label>
+                    <input type="number" id="editVehSeats" class="form-control" min="1" max="12" required>
+                </div>
+                <div class="form-group" style="flex: 1;">
+                    <label>Air Conditioned?</label>
+                    <select id="editVehAc" class="form-control">
+                        <option value="true">Yes (A/C)</option>
+                        <option value="false">Open-Top (No A/C)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('editVehicleModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitEditVehicle()">Update Vehicle</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Edit Trip Schedule -->
+<div id="editScheduleModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Safari Schedule</h3>
+            <button class="modal-close" onclick="closeModal('editScheduleModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editSchedId">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Schedule Date *</label>
+                <input type="date" id="editSchedDate" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Time Slot *</label>
+                <select id="editSchedSlot" class="form-control" required>
+                    <option value="MORNING_0600">Morning (06:00 AM - 10:00 AM)</option>
+                    <option value="AFTERNOON_1430">Afternoon (02:30 PM - 06:30 PM)</option>
+                    <option value="FULL_DAY_0600">Full Day (06:00 AM - 06:00 PM)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Max Guest Slot Capacity</label>
+                <input type="number" id="editSchedMaxSlots" class="form-control" min="1" max="100">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('editScheduleModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitEditSchedule()">Update Schedule</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Dispatch Vehicle Assignment -->
+<div id="dispatchModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Dispatch Vehicle to Safari Tour</h3>
+            <button class="modal-close" onclick="closeModal('dispatchModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Select Confirmed Safari Booking *</label>
+                <select id="dispatchBookingSelect" class="form-control" required></select>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Select Safari 4x4 Vehicle *</label>
+                <select id="dispatchVehicleSelect" class="form-control" required>
+                    <option value="">Select Safari 4x4 Vehicle</option>
+                </select>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--color-text-muted); margin-top: 8px;">
+                Vehicles designated under active maintenance cannot be dispatched until service completion.
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('dispatchModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitDispatchAssignment()">Assign Vehicle</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Add New Guide -->
+<div id="createGuideModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Add Safari Guide</h3>
+            <button class="modal-close" onclick="closeModal('createGuideModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Full Name *</label>
+                <input type="text" id="newGuideName" class="form-control" placeholder="e.g. Sunil Perera" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>License Number *</label>
+                <input type="text" id="newGuideLicense" class="form-control" placeholder="e.g. LK-GL-9999" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Phone Number</label>
+                <input type="text" id="newGuidePhone" class="form-control" placeholder="+94 77 123 4567">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div class="form-group">
+                    <label>Languages Spoken</label>
+                    <input type="text" id="newGuideLangs" class="form-control" placeholder="English, Sinhala, German" required>
+                </div>
+                <div class="form-group">
+                    <label>Experience (Years)</label>
+                    <input type="number" id="newGuideExp" class="form-control" value="5" min="1" required>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('createGuideModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitCreateGuide()">Save Guide</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Edit Safari Guide -->
+<div id="editGuideModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Safari Guide</h3>
+            <button class="modal-close" onclick="closeModal('editGuideModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <!-- Hidden ID field to know which guide we are updating -->
+            <input type="hidden" id="editGuideId">
+
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Full Name *</label>
+                <input type="text" id="editGuideName" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>License Number *</label>
+                <input type="text" id="editGuideLicense" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Phone Number</label>
+                <input type="text" id="editGuidePhone" class="form-control">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                <div class="form-group">
+                    <label>Languages Spoken</label>
+                    <input type="text" id="editGuideLangs" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>Experience (Years)</label>
+                    <input type="number" id="editGuideExp" class="form-control" min="1" required>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('editGuideModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitEditGuide()">Update Guide</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Assign Guide to Safari -->
+<div id="assignGuideModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Assign Guide to Safari Tour</h3>
+            <button class="modal-close" onclick="closeModal('assignGuideModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Select Confirmed Safari Booking *</label>
+                <select id="assignGuideBookingSelect" class="form-control" required></select>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Select Safari Guide *</label>
+                <select id="assignGuideSelect" class="form-control" required>
+                    <option value="">Select Available Guide</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('assignGuideModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitGuideAssignment()">Assign Guide</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Process Refund -->
+<!-- MODAL: Finance - reject a bank transfer that could not be found -->
+<div id="rejectTransferModal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 480px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Reject Bank Transfer</h3>
+            <button class="modal-close" onclick="closeModal('rejectTransferModal')" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="rejectTransferPaymentId">
+            <p style="margin-bottom: 12px;">Transfer <strong id="rejectTransferRef"></strong> will be marked as failed and the customer will be asked to pay again.</p>
+            <div class="form-group">
+                <label for="rejectTransferReason">Reason (shown to the customer)</label>
+                <textarea id="rejectTransferReason" class="form-control" rows="3" placeholder="e.g. No matching transfer received with this reference number."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('rejectTransferModal')">Cancel</button>
+            <button class="btn btn-primary" style="background: var(--color-danger); border-color: var(--color-danger);" onclick="submitRejectTransfer()">Reject Transfer</button>
+        </div>
+    </div>
+</div>
+
+<div id="refundModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Process Customer Refund</h3>
+            <button class="modal-close" onclick="closeModal('refundModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p style="margin-bottom: 12px;">Transaction Reference: <strong id="refundTxnRef"></strong></p>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Refund Amount ($) *</label>
+                <input type="number" id="refundAmount" class="form-control" step="0.01" min="1" required>
+            </div>
+            <div class="form-group">
+                <label>Mandatory Refund Reason *</label>
+                <textarea id="refundReason" class="form-control" rows="3" placeholder="Enter reason for ledger reconciliation" required></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('refundModal')">Cancel</button>
+            <button class="btn btn-secondary" onclick="submitRefund()">Process Refund</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: Admin Create User -->
+<div id="adminCreateUserModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Create User Account & Assign Role</h3>
+            <button class="modal-close" onclick="closeModal('adminCreateUserModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Full Name *</label>
+                <input type="text" id="newUserName" class="form-control" placeholder="e.g. Priyantha Jayawardena" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Email Address *</label>
+                <input type="email" id="newUserEmail" class="form-control" placeholder="staff@wildlife.lk" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Initial Temporary Password *</label>
+                <input type="password" id="newUserPassword" class="form-control" placeholder="••••••••••••" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Phone Number</label>
+                <input type="text" id="newUserPhone" class="form-control" placeholder="+94 77 123 4567">
+            </div>
+            <div class="form-group">
+                <label>Assign Role *</label>
+                <select id="newUserRole" class="form-control" required>
+                    <option value="ROLE_BOOKING_MANAGER">Booking & Customer Relations Manager</option>
+                    <option value="ROLE_OPERATIONS_MANAGER">Operations Manager</option>
+                    <option value="ROLE_FLEET_MANAGER">Vehicle & Fleet Manager</option>
+                    <option value="ROLE_FINANCE_MANAGER">Finance Manager</option>
+                    <option value="ROLE_ADMIN">System Administrator</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('adminCreateUserModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitAdminCreateUser()">Create User Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL: User Profile Management -->
+<div id="profileModal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 450px;">
+        <div class="modal-header">
+            <h3 class="modal-title">My Profile</h3>
+            <button class="modal-close" onclick="closeModal('profileModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="form-group" style="margin-bottom: 14px;">
+                <label>Email Address (Read Only)</label>
+                <input type="email" id="profileEmail" class="form-control" disabled style="background-color: #f4f6f5; color: #777;">
+            </div>
+            <div class="form-group" style="margin-bottom: 14px;">
+                <label>Full Name *</label>
+                <input type="text" id="profileName" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 14px;">
+                <label>Phone Number</label>
+                <input type="text" id="profilePhone" class="form-control" placeholder="+94 7X XXX XXXX">
+            </div>
+            <p style="font-size: 0.8rem; color: var(--color-text-muted);">
+                Role: <strong id="profileRoleBadge" style="color: var(--color-primary);"></strong>
+            </p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('profileModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitProfileUpdate()">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Staff User Modal -->
+<div id="editUserModal" class="modal-overlay">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 class="modal-title">Edit Staff User</h3>
+            <button class="modal-close" onclick="closeModal('editUserModal')">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="editUserId">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Full Name</label>
+                <input type="text" id="editUserName" class="form-control">
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Email Address</label>
+                <input type="email" id="editUserEmail" class="form-control" disabled style="background: var(--color-bg); cursor: not-allowed;">
+                <small style="color: var(--color-text-muted);">Email addresses cannot be changed.</small>
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Phone Number</label>
+                <input type="text" id="editUserPhone" class="form-control">
+            </div>
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label>Assign Role</label>
+                <select id="editUserRole" class="form-control">
+                    <option value="ROLE_CUSTOMER">Customer</option>
+                    <option value="ROLE_BOOKING_MANAGER">Booking Manager</option>
+                    <option value="ROLE_OPERATIONS_MANAGER">Operations Manager</option>
+                    <option value="ROLE_FLEET_MANAGER">Fleet Manager</option>
+                    <option value="ROLE_FINANCE_MANAGER">Finance Manager</option>
+                    <option value="ROLE_ADMIN">System Administrator</option>
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('editUserModal')">Cancel</button>
+            <button class="btn btn-primary" onclick="submitEditUser()">Save Changes</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Alerts Container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<!-- Official Portal Footer -->
+<footer class="portal-footer">
+    <div class="container footer-content">
+        <div class="footer-top-row">
+            <div>
+                <div class="footer-brand-title">
+                    <!-- Leopard Paw Print SVG -->
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" style="color: var(--color-accent);">
+                        <path d="M12 8.5c-1.65 0-3-1.35-3-3s1.35-3 3-3 3 1.35 3 3-1.35 3-3 3zm-5.5 1c-1.38 0-2.5-1.12-2.5-2.5S5.12 4.5 6.5 4.5 9 5.62 9 7s-1.12 2.5-2.5 2.5zm11 0c-1.38 0-2.5-1.12-2.5-2.5S16.12 4.5 17.5 4.5 20 5.62 20 7s-1.12 2.5-2.5 2.5zM12 11c-3.1 0-5.73 1.55-7.38 3.93-.32.46-.42 1.05-.27 1.59l1.45 3.86c.36.95 1.3 1.58 2.32 1.58.53 0 1.05-.15 1.53-.44L12 20.35l2.4 1.45c.48.29 1 .44 1.53.44 1.01 0 1.96-.63 2.32-1.58l1.45-3.86c.15-.54.05-1.13-.27-1.59C17.73 12.55 15.1 11 12 11z"/>
+                    </svg>
+                    Wild-Life Safari <span>Sri Lanka</span>
+                </div>
+                <p class="footer-subtitle">Department of Wildlife Conservation &bull; Sri Lanka Safari Tourism Portal</p>
+            </div>
+            <div class="footer-ssl-badge">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <span>256-Bit SSL Encrypted & Verified Booking</span>
+            </div>
+        </div>
+
+        <nav class="footer-nav" aria-label="Footer">
+            <a href="#destinations">National Parks</a>
+            <a href="#experience">The Experience</a>
+            <a href="#safariPackages">Safari Packages</a>
+            <a href="#book">Book a Safari</a>
+            <a href="#feedback">Reviews</a>
+            <a href="/login">Login</a>
+            <a href="/register">Create Account</a>
+        </nav>
+
+        <div class="footer-payments-bar">
+            <span class="payment-heading">Accepted Secure Payment Methods & Wallets</span>
+            <div class="payment-badges-list">
+                <div class="pay-pill pay-visa" title="Visa"><span>VISA</span></div>
+                <div class="pay-pill pay-mastercard" title="Mastercard"><span class="mc-circle mc-left"></span><span class="mc-circle mc-right"></span></div>
+                <div class="pay-pill pay-amex" title="American Express"><span>AMEX</span></div>
+                <div class="pay-pill pay-diners" title="Diners Club"><span class="diners-icon">⊜</span><span>Diners</span></div>
+                <div class="pay-pill pay-discover" title="Discover"><span>DISCOVER</span></div>
+                <div class="pay-pill pay-vwallet" title="Virtual Wallet"><span>WALLET</span></div>
+                <div class="pay-pill pay-ezcash" title="Dialog eZ Cash"><span>eZ<i>Cash</i></span></div>
+                <div class="pay-pill pay-mcash" title="Mobitel mCash"><span>m<b>Cash</b></span></div>
+                <div class="pay-pill pay-vishwa" title="Sampath Vishwa"><span>VISHWA</span></div>
+            </div>
+        </div>
+
+        <div class="footer-bottom-row">
+            <p>&copy; 2026 Sri Lanka Wildlife Conservation. All Rights Reserved.</p>
+            <span>Sri Lanka Safari Tourism Digital Network</span>
+        </div>
+    </div>
+</footer>
+
+<!-- UPGRADE: Chart.js for Visual Analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Your existing app script -->
+<script src="/js/safari-app.js?v=8"></script>
+<!-- Cinematic home: GSAP + ScrollTrigger + Lenis (pinned versions); page works without them -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+<script src="/js/home/home-cinematic.js?v=11" defer></script>
+
+<script>
+    function openReviewModal(author, tour, stars, text) {
+        document.getElementById('revModalAuthor').textContent = author;
+        document.getElementById('revModalTour').textContent = tour;
+        document.getElementById('revModalStars').textContent = stars;
+        document.getElementById('revModalContent').textContent = text;
+        openModal('readReviewModal');
+    }
+
+    function openAdvanceReceiptModal(bookingRef, totalAmount, paidAmount, txnRef = '') {
+        const balance = Math.max(0, totalAmount - paidAmount).toFixed(2);
+        document.getElementById('advRecBookingRef').textContent = bookingRef;
+        document.getElementById('advRecTxnRef').textContent = txnRef || 'TXN-ADV-' + Math.floor(100000 + Math.random() * 900000);
+        document.getElementById('advRecDate').textContent = new Date().toISOString().replace('T', ' ').substring(0, 19);
+        document.getElementById('advRecTotalCost').textContent = `$${parseFloat(totalAmount).toFixed(2)}`;
+        document.getElementById('advRecPaidAmount').textContent = `$${parseFloat(paidAmount).toFixed(2)}`;
+        document.getElementById('advRecBalanceDue').textContent = `$${balance}`;
+        openModal('advanceReceiptModal');
+    }
+
+    async function submitUserFeedback() {
+        const msg = document.getElementById('userFbMessage').value.trim();
+        const type = document.getElementById('userFbType').value;
+
+        if (!msg) {
+            showToast('Please enter your feedback message.', 'error');
+            return;
+        }
+
+        // 1. Security Check: Ensure they are logged in as a Customer
+        if (!currentUser || currentUser.role !== 'ROLE_CUSTOMER') {
+            showToast('Please sign in to your Customer account to submit feedback or help requests.', 'info');
+            return;
+        }
+
+        // 2. Map the feedback box to your Support Ticket database structure
+        const payload = {
+            category: type === 'TOUR_FEEDBACK' ? 'GENERAL' : 'INQUIRY',
+            subject: type === 'TOUR_FEEDBACK' ? 'Safari Tour Feedback & Review' : 'General Help Request',
+            description: msg,
+            priority: 'MEDIUM'
+        };
+
+        // 3. Send it to your Java Backend
+        try {
+            const res = await fetch('/api/customer/support/tickets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                // Clear the form and close the modal
+                document.getElementById('userFbMessage').value = '';
+                closeModal('helpFeedbackModal');
+                showToast('Thank you! Your submission has been sent to our management team.', 'success');
+
+                // Refresh the Customer's ticket table so they instantly see it appear
+                if (typeof loadCustomerTickets === 'function') loadCustomerTickets();
+            } else {
+                showToast(data.message || 'Failed to submit feedback.', 'error');
+            }
+        } catch (e) {
+            showToast('Network error: ' + e.message, 'error');
+        }
+    }
+
+    // ================= PAYMENT INPUT MASKING =================
+
+    // Auto-formats Card Number: adds a space after every 4 digits
+    function formatCardNumber(input) {
+        let val = input.value.replace(/\D/g, ''); // Strip all non-numbers
+        val = val.replace(/(.{4})/g, '$1 ').trim(); // Add a space every 4 characters
+        input.value = val;
+    }
+
+    // Auto-formats Expiry: adds a slash after the month (MM/YY)
+    function formatExpiry(input) {
+        let val = input.value.replace(/\D/g, ''); // Strip all non-numbers
+        if (val.length > 2) {
+            val = val.substring(0, 2) + '/' + val.substring(2, 4); // Inject the slash
+        }
+        input.value = val;
+    }
+</script>
+</body>
+</html>

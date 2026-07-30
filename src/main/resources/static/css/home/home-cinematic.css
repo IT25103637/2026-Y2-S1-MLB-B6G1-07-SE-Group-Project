@@ -1,0 +1,1112 @@
+/* =========================================================================
+   Cinematic Home Page — Wild-Life Safari Sri Lanka
+   Layered on top of safari-theme.css. Cinematic sections are always dark;
+   the existing data sections (#destinations, #safariPackages, #feedback)
+   keep following the light/dark theme toggle.
+   ========================================================================= */
+
+:root {
+    --cine-ink: #0b0f0c;
+    --cine-forest: #101a14;
+    --cine-forest-2: #16241c;
+    --cine-moss: #2a3b2f;
+    --cine-sand: #efe7d6;
+    --cine-sand-muted: rgba(239, 231, 214, 0.72);
+    --cine-sand-faint: rgba(239, 231, 214, 0.5);
+    --cine-amber: #e3a93f;
+    --cine-amber-deep: #c98a22;
+    --cine-line: rgba(239, 231, 214, 0.16);
+    --font-display: 'Plus Jakarta Sans', var(--font-sans);
+    --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --cine-gutter: clamp(20px, 4vw, 56px);
+    --cine-max: 1600px;
+    /* navbar + sections share one content frame so left edges line up */
+    --cine-edge: max(var(--cine-gutter), calc((100% - var(--cine-max)) / 2 + var(--cine-gutter)));
+    --ease-cine: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Lenis */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+
+body.cinema-home {
+    font-family: var(--font-display);
+    overflow-x: hidden;
+}
+
+/* Hidden-for-staff behaviour relies on inline display toggling from safari-app.js */
+.cinema-home .skip-link {
+    position: absolute;
+    left: 16px;
+    top: -60px;
+    z-index: 2000;
+    background: var(--cine-amber);
+    color: var(--cine-ink);
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-decoration: none;
+}
+.cinema-home .skip-link:focus { top: 12px; }
+
+.cinema-home :focus-visible {
+    outline: 2px solid var(--cine-amber);
+    outline-offset: 3px;
+}
+
+/* =========================================================================
+   NAVBAR — transparent over the hero, solid once scrolled
+   ========================================================================= */
+.cinema-home .navbar {
+    height: 72px;
+    padding: 0 var(--cine-edge);
+    background: rgba(11, 15, 12, 0.92);
+    backdrop-filter: saturate(140%) blur(10px);
+    -webkit-backdrop-filter: saturate(140%) blur(10px);
+    border-bottom: 1px solid var(--cine-line);
+    box-shadow: none;
+    transition: background-color 0.4s ease, border-color 0.4s ease, height 0.3s ease;
+}
+.cinema-home .navbar.is-over-hero {
+    background: linear-gradient(to bottom, rgba(6, 9, 7, 0.55), rgba(6, 9, 7, 0));
+    border-bottom-color: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+.cinema-home .nav-brand {
+    font-size: 1.125rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+}
+.cinema-home .nav-brand span { color: var(--cine-amber); }
+.cinema-home .nav-link {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--cine-sand-muted);
+    position: relative;
+    padding: 8px 12px;
+    background: none;
+}
+.cinema-home .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 2px;
+    height: 1px;
+    background: var(--cine-amber);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.45s var(--ease-cine);
+}
+.cinema-home .nav-link:hover,
+.cinema-home .nav-link.is-active { color: #fff; background: none; }
+.cinema-home .nav-link:hover::after,
+.cinema-home .nav-link.is-active::after { transform: scaleX(1); }
+.cinema-home .nav-cta {
+    margin-left: 6px;
+    padding: 9px 18px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--cine-ink);
+    background: var(--cine-amber);
+    border-radius: 999px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.3s var(--ease-cine);
+}
+.cinema-home .nav-cta:hover { background: #f0bb57; transform: translateY(-1px); }
+.cinema-home .theme-pill-btn {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--cine-line);
+    white-space: nowrap;
+}
+.cinema-home .nav-links { gap: 2px; flex-wrap: nowrap; }
+.cinema-home .nav-link,
+.cinema-home .nav-cta,
+.cinema-home #authNavLinks a { white-space: nowrap; }
+
+/* Compact the utility pills to icons before the links run out of room */
+@media (max-width: 1600px) {
+    .cinema-home .theme-pill-btn { font-size: 0; gap: 0; padding: 8px; }
+    .cinema-home .theme-pill-btn span { display: none; }
+}
+/* secondary scroll links (also in the footer) give way first */
+@media (max-width: 1400px) and (min-width: 769px) {
+    .cinema-home .nav-link.cinema-public { display: none; }
+}
+@media (max-width: 1100px) and (min-width: 769px) {
+    .cinema-home .nav-brand span { display: none; }
+}
+@media (max-width: 480px) {
+    .cinema-home .nav-brand { font-size: 1rem; gap: 8px; }
+    .cinema-home .nav-brand span { display: none; }
+    .cinema-home #currencyToggleBtn { margin-left: 4px !important; }
+}
+@media (max-width: 960px) and (min-width: 769px) {
+    .cinema-home .nav-cta { display: none; }
+}
+
+/* =========================================================================
+   SHARED TYPE + BUTTONS
+   ========================================================================= */
+.cine-section {
+    position: relative;
+    background: var(--cine-ink);
+    color: var(--cine-sand);
+    overflow: hidden;
+}
+.cine-wrap {
+    width: 100%;
+    max-width: var(--cine-max);
+    margin: 0 auto;
+    padding: 0 var(--cine-gutter);
+}
+.cine-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cine-amber);
+}
+.cine-eyebrow::before {
+    content: '';
+    width: 36px;
+    height: 1px;
+    background: currentColor;
+}
+.cine-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 5.5rem);
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    color: var(--cine-sand);
+    margin: 18px 0 0;
+}
+.cine-serif {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    text-transform: none;
+}
+.cine-lede {
+    font-size: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+    line-height: 1.7;
+    color: var(--cine-sand-muted);
+    max-width: 42ch;
+    margin-top: 22px;
+}
+.cine-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 34px;
+}
+.cine-btn {
+    --btn-x: 0px;
+    --btn-y: 0px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 52px;
+    padding: 0 26px;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 999px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transform: translate3d(var(--btn-x), var(--btn-y), 0);
+    transition: background-color 0.35s ease, color 0.35s ease, border-color 0.35s ease, transform 0.35s var(--ease-cine);
+}
+.cine-btn svg { transition: transform 0.45s var(--ease-cine); flex: none; }
+.cine-btn:hover svg { transform: translateX(5px); }
+.cine-btn--primary { background: var(--cine-amber); color: var(--cine-ink); }
+.cine-btn--primary:hover { background: #f0bb57; }
+.cine-btn--ghost {
+    background: rgba(11, 15, 12, 0.25);
+    color: var(--cine-sand);
+    border-color: rgba(239, 231, 214, 0.45);
+}
+.cine-btn--ghost:hover { border-color: var(--cine-sand); background: rgba(239, 231, 214, 0.08); }
+
+/* Tight, amber full stop on the big display titles */
+.cine-dot { color: var(--cine-amber); margin-left: -0.1em; }
+
+/* Line-mask text reveal (JS wraps words; without JS text is simply shown) */
+.reveal-line { display: block; overflow: hidden; padding-bottom: 0.06em; }
+.reveal-line > span { display: inline-block; will-change: transform; }
+
+/* =========================================================================
+   01 — HERO
+   ========================================================================= */
+.cine-hero {
+    height: 100vh;
+    height: 100svh;
+    min-height: 560px;
+    margin-top: -72px; /* slide under the sticky navbar */
+    display: flex;
+    align-items: flex-end;
+}
+.cine-hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+.cine-hero__poster,
+.cine-hero__fg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 62% 50%;
+    transform-origin: 62% 55%;
+}
+.cine-hero__fg { transform-origin: 0% 60%; pointer-events: none; }
+.cine-hero__media { transform-origin: 62% 55%; }
+
+/* Hold the hero copy until the intro runs (a head-script timer releases it
+   if the scroll engine never loads) */
+.js .cine-hero__content,
+.js .cine-hero__meta { opacity: 0; transition: opacity 0.5s ease; }
+.js.cine-ready .cine-hero__content,
+.js.cine-ready .cine-hero__meta { opacity: 1; }
+.cine-hero__shade {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background:
+        linear-gradient(90deg, rgba(6, 9, 7, 0.78) 0%, rgba(6, 9, 7, 0.35) 45%, rgba(6, 9, 7, 0) 70%),
+        linear-gradient(0deg, rgba(6, 9, 7, 0.85) 0%, rgba(6, 9, 7, 0) 45%);
+}
+.cine-hero__haze {
+    position: absolute;
+    inset: -10% -10% 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(60% 40% at 70% 40%, rgba(255, 214, 150, 0.12), transparent 70%);
+    mix-blend-mode: screen;
+}
+.cine-hero__content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    padding-bottom: clamp(56px, 10vh, 120px);
+}
+.cine-hero__title {
+    font-size: clamp(3rem, 7vw, 7rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    margin: 20px 0 0;
+    color: #fff;
+}
+.cine-hero__sub {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.375rem, 1rem + 1.4vw, 2.25rem);
+    color: var(--cine-sand);
+    margin-top: 18px;
+}
+.cine-hero__support {
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    line-height: 1.7;
+    color: var(--cine-sand-muted);
+    max-width: 44ch;
+    margin-top: 18px;
+}
+.cine-hero__meta {
+    position: absolute;
+    right: var(--cine-edge);
+    bottom: clamp(56px, 10vh, 120px);
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    font-size: 0.8125rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cine-sand-faint);
+}
+.cine-scroll-cue {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--cine-sand-muted);
+}
+.cine-scroll-cue i {
+    display: block;
+    width: 1px;
+    height: 44px;
+    background: linear-gradient(var(--cine-amber), transparent);
+    animation: cueDrop 2.2s var(--ease-cine) infinite;
+    transform-origin: top;
+}
+@keyframes cueDrop {
+    0% { transform: scaleY(0); opacity: 1; }
+    60% { transform: scaleY(1); opacity: 1; }
+    100% { transform: scaleY(1); opacity: 0; }
+}
+
+/* =========================================================================
+   02 — WHERE THE WILD BEGINS
+   ========================================================================= */
+.cine-origin {
+    padding: clamp(96px, 14vh, 160px) 0 clamp(80px, 12vh, 140px);
+    background: linear-gradient(var(--cine-ink), var(--cine-forest));
+}
+.cine-origin__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 6vw, 112px);
+    align-items: center;
+}
+.cine-origin__frame {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border-radius: 4px;
+    background: var(--cine-forest-2);
+}
+.cine-origin__frame img {
+    position: absolute;
+    inset: -12% 0;
+    width: 100%;
+    height: 124%;
+    object-fit: cover;
+    object-position: center 80%; /* keep the elephant herd on the shoreline in frame */
+}
+.cine-origin__caption {
+    position: absolute;
+    left: 20px;
+    bottom: 18px;
+    font-size: 0.8125rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cine-sand);
+    text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
+}
+.cine-origin__index {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px clamp(16px, 2vw, 32px);
+    margin-top: 44px;
+    padding-top: 22px;
+    border-top: 1px solid var(--cine-line);
+    font-size: 0.9375rem;
+    color: var(--cine-sand-muted);
+    flex-wrap: wrap;
+}
+.cine-origin__index strong {
+    display: block;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: 1.5rem;
+    color: var(--cine-sand);
+}
+
+/* =========================================================================
+   03 — THE SAFARI EXPERIENCE (pinned, 4 chapters)
+   ========================================================================= */
+.cine-exp { background: var(--cine-ink); }
+.cine-exp__stage {
+    position: relative;
+    height: 100vh;
+    height: 100svh;
+    min-height: 560px;
+    overflow: hidden;
+}
+.cine-exp__slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+}
+.cine-exp__slide:first-child { opacity: 1; visibility: visible; }
+.cine-exp__slide img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.cine-exp__stage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        linear-gradient(0deg, rgba(6, 9, 7, 0.9) 0%, rgba(6, 9, 7, 0.1) 55%),
+        linear-gradient(90deg, rgba(6, 9, 7, 0.6), rgba(6, 9, 7, 0) 55%);
+    pointer-events: none;
+}
+.cine-exp__head {
+    position: absolute;
+    z-index: 2;
+    top: clamp(96px, 14vh, 140px);
+    left: 0;
+    right: 0;
+}
+.cine-exp__heading {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1.375rem, 1rem + 1.2vw, 2rem);
+    color: var(--cine-sand);
+    margin-top: 12px;
+}
+.cine-exp__copy {
+    position: absolute;
+    z-index: 2;
+    left: 0;
+    right: 0;
+    bottom: clamp(48px, 9vh, 110px);
+}
+.cine-exp__chapter {
+    position: absolute;
+    left: var(--cine-edge);
+    right: var(--cine-edge);
+    bottom: 0;
+    max-width: 720px;
+    opacity: 0;
+    visibility: hidden;
+}
+.cine-exp__chapter:first-child { opacity: 1; visibility: visible; }
+.cine-exp__num {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    color: var(--cine-amber);
+}
+.cine-exp__label {
+    font-size: clamp(2.5rem, 5vw, 5.5rem);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+    text-transform: uppercase;
+    margin: 8px 0 14px;
+    color: #fff;
+}
+.cine-exp__text {
+    font-size: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+    line-height: 1.7;
+    color: var(--cine-sand-muted);
+    max-width: 46ch;
+}
+.cine-exp__progress {
+    position: absolute;
+    z-index: 3;
+    right: var(--cine-edge);
+    bottom: clamp(48px, 9vh, 110px);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.cine-exp__progress li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cine-sand-faint);
+    transition: color 0.4s ease;
+}
+.cine-exp__progress li::before {
+    content: '';
+    width: 22px;
+    height: 1px;
+    background: currentColor;
+    transition: width 0.5s var(--ease-cine);
+}
+.cine-exp__progress li.is-active { color: var(--cine-sand); }
+.cine-exp__progress li.is-active::before { width: 48px; background: var(--cine-amber); }
+
+/* =========================================================================
+   04 — PLAN YOUR JOURNEY (live data)
+   ========================================================================= */
+.cine-plan {
+    padding: clamp(96px, 14vh, 160px) 0;
+    background: var(--cine-forest);
+}
+.cine-plan__top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+.cine-stats {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-top: clamp(48px, 7vh, 80px);
+    border-top: 1px solid var(--cine-line);
+}
+.cine-stat {
+    padding: 28px 24px 30px 0;
+    border-right: 1px solid var(--cine-line);
+}
+.cine-stat + .cine-stat { padding-left: 24px; }
+.cine-stat:last-child { border-right: 0; }
+.cine-stat__val {
+    font-size: clamp(2.75rem, 2rem + 3vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    color: var(--cine-sand);
+    font-variant-numeric: tabular-nums;
+}
+.cine-stat__label {
+    margin-top: 12px;
+    font-size: 0.9375rem;
+    color: var(--cine-sand-muted);
+}
+.cine-departures {
+    margin-top: clamp(40px, 6vh, 64px);
+}
+.cine-departures h3 {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--cine-sand-faint);
+    margin-bottom: 8px;
+}
+.cine-dep-list { list-style: none; margin: 0; padding: 0; }
+.cine-dep {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 1fr) auto;
+    gap: 20px;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--cine-line);
+    font-size: 1rem;
+}
+.cine-dep__date {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    color: var(--cine-amber);
+}
+.cine-dep__name { color: var(--cine-sand); font-weight: 600; }
+.cine-dep__name small { display: block; font-weight: 400; color: var(--cine-sand-muted); font-size: 0.9375rem; }
+.cine-dep__seats {
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--cine-sand);
+    padding: 6px 12px;
+    border: 1px solid var(--cine-line);
+    border-radius: 999px;
+    white-space: nowrap;
+}
+.cine-dep--empty { color: var(--cine-sand-muted); grid-template-columns: 1fr; }
+
+/* =========================================================================
+   05 — BOOKING MOMENT
+   ========================================================================= */
+.cine-book {
+    padding: clamp(110px, 16vh, 180px) 0;
+    background: var(--cine-ink);
+}
+.cine-book__bg {
+    position: absolute;
+    inset: -15% 0;
+    background-size: cover;
+    background-position: center 60%;
+    opacity: 0.28;
+}
+.cine-book::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: radial-gradient(80% 70% at 50% 50%, rgba(11, 15, 12, 0.35), rgba(11, 15, 12, 0.95));
+}
+.cine-book .cine-wrap { position: relative; z-index: 2; text-align: center; }
+.cine-book .cine-lede { margin-left: auto; margin-right: auto; max-width: 44ch; }
+.cine-book .cine-actions { justify-content: center; }
+.cine-book .search-card {
+    margin: 48px auto 0;
+    max-width: 980px;
+    text-align: left;
+    background: rgba(16, 26, 20, 0.82);
+    border: 1px solid var(--cine-line);
+    border-radius: 6px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+}
+.cine-book .search-card label {
+    color: var(--cine-sand-muted);
+    font-size: 0.8125rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+.cine-book .search-card .form-control {
+    background: rgba(11, 15, 12, 0.6);
+    border-color: var(--cine-line);
+    color: var(--cine-sand);
+    height: 48px;
+    font-size: 1rem;
+    color-scheme: dark;
+}
+.cine-book .search-card .btn { height: 48px !important; font-size: 0.95rem; }
+
+/* =========================================================================
+   06 — FINAL CTA (pinned sunset)
+   ========================================================================= */
+.cine-final {
+    height: 100vh;
+    height: 100svh;
+    min-height: 560px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+.cine-final__media {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+.cine-final__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 55%;
+}
+.cine-final::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(0deg, rgba(6, 9, 7, 0.85), rgba(6, 9, 7, 0.2) 50%, rgba(6, 9, 7, 0.55));
+}
+.cine-final .cine-wrap { position: relative; z-index: 2; }
+.cine-final__title {
+    font-size: clamp(3rem, 7vw, 7rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    text-transform: uppercase;
+    color: #fff;
+}
+.cine-final__sub {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: clamp(1.375rem, 1rem + 1.4vw, 2.25rem);
+    color: var(--cine-sand);
+    margin-top: 18px;
+}
+.cine-final .cine-actions { justify-content: center; }
+
+/* =========================================================================
+   EXISTING DATA SECTIONS — editorial treatment, theme-aware
+   ========================================================================= */
+.cinema-home #destinations,
+.cinema-home #safariPackages {
+    padding: clamp(80px, 12vh, 140px) 0;
+}
+.cinema-home #destinations .section-title,
+.cinema-home #safariPackages .section-title,
+.cinema-home .feedback-title {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+}
+.cinema-home #destinations .section-subtitle,
+.cinema-home #safariPackages .section-subtitle {
+    font-size: 1.0625rem;
+}
+.cinema-home .grid-cards .card {
+    border-radius: 6px;
+    transition: transform 0.5s var(--ease-cine), box-shadow 0.5s var(--ease-cine);
+}
+.cinema-home .grid-cards .card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.cinema-home .grid-cards .card-img-wrapper { overflow: hidden; }
+.cinema-home .grid-cards .card-img { transition: transform 1.2s var(--ease-cine); }
+.cinema-home .grid-cards .card:hover .card-img { transform: scale(1.06); }
+.cinema-home .grid-cards .card-desc { font-size: 0.975rem; }
+
+/* =========================================================================
+   FOOTER — dark forest in both themes
+   ========================================================================= */
+.cinema-home .portal-footer,
+[data-theme="dark"] .cinema-home .portal-footer {
+    background: var(--cine-ink);
+    color: var(--cine-sand-muted);
+    border-top: 1px solid var(--cine-line);
+    padding-top: 64px;
+}
+.cinema-home .footer-brand-title { color: var(--cine-sand); font-size: 1.25rem; }
+.cinema-home .footer-subtitle { color: var(--cine-sand-faint); }
+.cinema-home .footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    padding: 28px 0;
+    border-top: 1px solid var(--cine-line);
+    margin-top: 28px;
+}
+.cinema-home .footer-nav a {
+    color: var(--cine-sand-muted);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.3s ease;
+}
+.cinema-home .footer-nav a:hover { color: var(--cine-amber); }
+.cinema-home .footer-payments-bar,
+.cinema-home .footer-bottom-row { border-color: var(--cine-line); }
+.cinema-home .footer-bottom-row { color: var(--cine-sand-faint); }
+
+/* =========================================================================
+   RESPONSIVE
+   ========================================================================= */
+@media (max-width: 1024px) {
+    .cine-origin__grid { grid-template-columns: minmax(0, 1fr); }
+    .cine-origin__frame { aspect-ratio: 16 / 10; order: -1; }
+    .cine-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .cine-stat:nth-child(2) { border-right: 0; }
+    .cine-stat:nth-child(3) { padding-left: 0; }
+    .cine-stat:nth-child(n+3) { border-top: 1px solid var(--cine-line); }
+    .cine-exp__progress { display: none; }
+}
+
+@media (max-width: 768px) {
+    .cine-hero__video { object-position: 50% 50%; } /* portrait clip is pre-cropped */
+    .cinema-home .navbar { height: 64px; }
+    .cine-hero { margin-top: -64px; }
+    .cinema-home .nav-links.open {
+        background: rgba(11, 15, 12, 0.97);
+        top: 64px;
+    }
+    .cinema-home .nav-cta { margin: 8px 0 0; text-align: center; }
+    .cine-hero__meta { display: none; }
+    .cine-hero__poster, .cine-hero__fg { object-position: 68% 50%; }
+    .cine-hero__shade {
+        background: linear-gradient(0deg, rgba(6, 9, 7, 0.92) 0%, rgba(6, 9, 7, 0.4) 55%, rgba(6, 9, 7, 0.15) 100%);
+    }
+    .cine-dep { grid-template-columns: minmax(0, 1fr) auto; }
+    .cine-dep__date { grid-column: 1 / -1; font-size: 1.0625rem; }
+    .cine-btn { min-height: 50px; padding: 0 22px; }
+}
+
+@media (max-width: 1280px) {
+    .cine-origin__index { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 480px) {
+    .cine-actions { flex-direction: column; align-items: stretch; }
+    .cine-btn { justify-content: space-between; }
+    .cine-stats { grid-template-columns: minmax(0, 1fr); }
+    .cine-stat, .cine-stat + .cine-stat { padding: 22px 0; border-right: 0; }
+    .cine-stat + .cine-stat { border-top: 1px solid var(--cine-line); }
+    .cine-origin__index { gap: 18px 28px; }
+}
+
+/* =========================================================================
+   REDUCED MOTION / NO-JS: static, fully readable layout
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce) {
+    .cine-scroll-cue i { animation: none; }
+    .cine-btn, .cine-btn svg, .cinema-home .grid-cards .card, .cinema-home .grid-cards .card-img { transition: none; }
+}
+
+/* When the scroll engine is off (reduced motion, no JS, or low power),
+   the 4 experience chapters are stacked instead of pinned. */
+html:not(.cine-motion) .cine-exp__stage { height: auto; min-height: 0; overflow: visible; }
+html:not(.cine-motion) .cine-exp__stage::after { display: none; }
+html:not(.cine-motion) .cine-exp__head { position: relative; top: auto; padding: 96px 0 40px; }
+html:not(.cine-motion) .cine-exp__slides { display: none; }
+html:not(.cine-motion) .cine-exp__copy { position: relative; bottom: auto; padding-bottom: 96px; }
+html:not(.cine-motion) .cine-exp__progress { display: none; }
+html:not(.cine-motion) .cine-exp__chapters { display: grid; gap: 48px; }
+html:not(.cine-motion) .cine-exp__chapter {
+    position: relative;
+    left: auto; right: auto;
+    opacity: 1;
+    visibility: visible;
+    max-width: none;
+    margin: 0 var(--cine-gutter);
+}
+html:not(.cine-motion) .cine-exp__chapter-img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+.cine-motion .cine-exp__chapter-img { display: none; }
+
+/* =========================================================================
+   MEDIA LAYERS (hero frame sequence, lazy clips)
+   ========================================================================= */
+.cine-hero__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 62% 50%;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+.cine-hero__video.is-ready { opacity: 1; }
+.cine-hero__media.has-frames .cine-hero__fg { display: none; } /* the clip has its own foreground */
+.cine-origin__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 70%;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.cine-origin__video.is-playing { opacity: 1; }
+.cine-final__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 55%;
+    opacity: 0;
+    transition: opacity 1s ease;
+}
+.cine-final__video.is-playing { opacity: 1; }
+
+/* =========================================================================
+   3D VEHICLE SHOWCASE
+   ========================================================================= */
+.cine-fleet { background: radial-gradient(120% 90% at 70% 50%, #17251c 0%, var(--cine-ink) 60%); }
+.cine-fleet__stage {
+    position: relative;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    padding: clamp(88px, 11vh, 120px) 0 clamp(32px, 5vh, 56px);
+}
+.cine-fleet__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: clamp(24px, 4vw, 72px);
+    align-items: center;
+}
+.cine-fleet__specs {
+    list-style: none;
+    margin: 36px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 0;
+    border-top: 1px solid var(--cine-line);
+}
+.cine-fleet__specs li {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    column-gap: 14px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--cine-line);
+    counter-increment: spec;
+    transition: opacity 0.5s ease, color 0.5s ease;
+}
+.cine-fleet__specs li::before {
+    content: counter(spec, decimal-leading-zero);
+    grid-row: span 2;
+    font-family: var(--font-serif);
+    font-style: italic;
+    color: var(--cine-amber);
+    padding-top: 2px;
+}
+.cine-fleet__specs strong { color: var(--cine-sand); font-size: 1.0625rem; font-weight: 700; }
+.cine-fleet__specs span { color: var(--cine-sand-muted); font-size: 0.975rem; line-height: 1.6; }
+.cine-motion .cine-fleet__specs li { opacity: 0.38; }
+.cine-motion .cine-fleet__specs li.is-active { opacity: 1; }
+
+.cine-fleet__viewer {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    width: 100%;
+}
+.cine-fleet__glow {
+    position: absolute;
+    inset: 10% 5% 0;
+    background: radial-gradient(50% 45% at 50% 60%, rgba(227, 169, 63, 0.16), transparent 70%);
+    filter: blur(10px);
+    pointer-events: none;
+}
+.cine-fleet__viewer::after {
+    content: '';
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    bottom: 9%;
+    height: 8%;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(0, 0, 0, 0.55), transparent 70%);
+    pointer-events: none;
+}
+.cine-fleet__poster,
+.cine-fleet__viewer model-viewer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+.cine-fleet__viewer model-viewer {
+    --poster-color: transparent;
+    --progress-bar-color: var(--cine-amber);
+    background: transparent;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+}
+.cine-fleet__viewer model-viewer.is-loaded { opacity: 1; }
+.cine-fleet__viewer.has-model .cine-fleet__poster { opacity: 0; transition: opacity 0.8s ease 0.2s; }
+.cine-fleet__hint {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 0.8125rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--cine-sand-faint);
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+.cine-fleet__viewer.has-model .cine-fleet__hint { opacity: 1; }
+
+/* Hotspot labels rendered by model-viewer */
+.cine-hotspot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--cine-sand);
+    font: 700 0.8125rem/1 var(--font-display);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateY(6px);
+    transition: opacity 0.4s ease, transform 0.4s var(--ease-cine);
+    pointer-events: none;
+}
+.cine-hotspot::before {
+    content: '';
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--cine-amber);
+    box-shadow: 0 0 0 5px rgba(227, 169, 63, 0.25);
+    flex: none;
+}
+.cine-hotspot span {
+    padding: 7px 10px;
+    background: rgba(11, 15, 12, 0.78);
+    border: 1px solid var(--cine-line);
+    border-radius: 4px;
+}
+.cine-hotspot.is-active { opacity: 1; transform: none; }
+.cine-hotspot[data-visible="false"] { opacity: 0 !important; }
+
+@media (max-width: 1024px) {
+    .cine-fleet__grid { grid-template-columns: minmax(0, 1fr); }
+    .cine-fleet__viewer { aspect-ratio: 4 / 3; max-width: 720px; margin: 0 auto; }
+    .cine-motion .cine-fleet__specs li { opacity: 1; }
+}
+
+/* =========================================================================
+   SCENIC BACKDROPS behind the content sections
+   The image is sticky, so tall sections keep the scenery in view instead of
+   stretching one photo over thousands of pixels. Top/bottom fades blend
+   each section into its neighbours; opacity over ink keeps text legible.
+   ========================================================================= */
+.cine-photo,
+.cine-plan,
+.cine-fleet__stage { position: relative; isolation: isolate; }
+.cinema-home .cine-photo {
+    background: var(--cine-ink);
+    border-top: 0;
+}
+.cine-plan { background: var(--cine-ink); }
+.cine-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: clip;
+    pointer-events: none;
+    background: var(--cine-ink);
+}
+.cine-backdrop img {
+    position: sticky;
+    top: 0;
+    display: block;
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+    transform: scale(1.08);
+    will-change: transform;
+}
+.cine-backdrop--mid img { opacity: 0.5; }
+.cine-backdrop--soft img { opacity: 0.8; }
+.cine-backdrop::before,
+.cine-backdrop::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    height: min(240px, 30%);
+}
+.cine-backdrop::before { top: 0; background: linear-gradient(var(--cine-ink), rgba(11, 15, 12, 0)); }
+.cine-backdrop::after { bottom: 0; background: linear-gradient(rgba(11, 15, 12, 0), var(--cine-ink)); }
+
+/* Headings that now sit on photography: cinematic cream in both themes */
+.cinema-home .cine-photo .section-title,
+.cinema-home .cine-photo .feedback-title {
+    color: var(--cine-sand);
+    text-shadow: 0 2px 28px rgba(0, 0, 0, 0.45);
+}
+.cinema-home .cine-photo .section-subtitle { color: var(--cine-sand-muted); }
+.cinema-home .cine-photo .feedback-subtitle { color: var(--cine-amber); }
+
+/* Cards read as slightly lifted panels over the scenery (dark theme) */
+[data-theme="dark"] .cinema-home .cine-photo .card,
+[data-theme="dark"] .cinema-home .cine-photo .feedback-card {
+    background: rgba(18, 29, 23, 0.88);
+    border-color: rgba(239, 231, 214, 0.1);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* Sunset section blends in from the reviews above instead of starting on a hard edge */
+.cine-final__fade {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 35%;
+    background: linear-gradient(var(--cine-ink), rgba(11, 15, 12, 0));
+    pointer-events: none;
+}
