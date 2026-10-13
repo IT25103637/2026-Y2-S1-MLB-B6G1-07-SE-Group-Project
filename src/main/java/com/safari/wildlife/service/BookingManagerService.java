@@ -33,7 +33,7 @@ public class BookingManagerService {
         this.scheduleRepository = scheduleRepository;
         this.bookingEvents = bookingEvents;
     }
-
+    //crud
     @Transactional(readOnly = true)
     public List<Booking> getPendingBookings() {
         return bookingRepository.findByStatusOrderByCreatedAtDesc(BookingStatus.PENDING);

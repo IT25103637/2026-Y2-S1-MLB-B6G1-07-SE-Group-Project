@@ -82,6 +82,34 @@ public class AuthService {
         return savedUser;
     }
 
+    /** "My Profile": the signed-in user updates their own full name and phone number. */
+    @Transactional
+    public User updateProfile(String fullName, String phone) {
+        User user = getCurrentUser();
+        if (user == null) {
+            throw new BadRequestException("Please sign in to update your profile.");
+        }
+        String name = fullName == null ? "" : fullName.trim();
+        if (name.length() < 2 || name.length() > 100) {
+            throw new BadRequestException("Full name must be between 2 and 100 characters.");
+        }
+        String tel = phone == null ? "" : phone.trim();
+        if (!tel.isEmpty()) {
+            String digits = tel.replaceAll("\\D", "");
+            if (!tel.matches("\\+?[0-9 ()-]+") || digits.length() < 9 || digits.length() > 15) {
+                throw new BadRequestException("Please enter a valid phone number, e.g. +94 77 123 4567.");
+            }
+        }
+
+        user.setFullName(name);
+        user.setPhone(tel.isEmpty() ? null : tel);
+        User saved = userRepository.save(user);
+
+        auditService.logAction(saved, "PROFILE_UPDATE", "User", saved.getEmail(),
+                "Updated own profile (name / phone)", "127.0.0.1");
+        return saved;
+    }
+
     @Transactional(readOnly = true)
     public User getCurrentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

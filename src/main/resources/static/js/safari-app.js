@@ -821,19 +821,14 @@ async function cancelBooking(id) {
     if (!confirm("Are you sure you want to cancel this safari booking?")) return;
 
     try {
-        // First, try a formal cancel endpoint if your backend has one
-        let res = await fetch(`/api/customer/bookings/${id}/cancel`, { method: 'PUT' });
-
-        // Fallback: If a specific cancel endpoint doesn't exist, safely delete the unfinalized booking
-        if (!res.ok) {
-            res = await fetch(`/api/customer/bookings/${id}`, { method: 'DELETE' });
-        }
+        const res = await fetch(`/api/customer/bookings/${id}/cancel`, { method: 'PUT' });
+        const data = await res.json().catch(() => ({}));
 
         if (res.ok) {
             showToast("Booking cancelled successfully.", "success");
             await loadCustomerBookings();
         } else {
-            showToast("Could not cancel booking. Please contact support.", "error");
+            showToast(data.message || "Could not cancel booking. Please contact support.", "error");
         }
     } catch (e) {
         showToast("Network error: " + e.message, "error");
@@ -841,10 +836,13 @@ async function cancelBooking(id) {
 }
 
 async function deleteBookingHistory(id) {
-    if(!confirm("Are you sure you want to permanently remove this booking from your history?")) return;
+    if (!confirm("Remove this booking from your booking history?")) return;
     try {
+        // Only hides the booking from this customer's list; the company's booking and payment records are kept
         const res = await fetch(`/api/customer/bookings/${id}`, { method: 'DELETE' });
-        if (res.ok) { showToast("Booking history removed.", "success"); loadCustomerBookings(); }
+        const data = await res.json().catch(() => ({}));
+        if (res.ok) { showToast("Booking removed from your history.", "success"); loadCustomerBookings(); }
+        else { showToast(data.message || "Could not remove this booking.", "error"); }
     } catch (e) { showToast("Network error", "error"); }
 }
 
@@ -1459,13 +1457,16 @@ function openCreatePackageModal() {
 }
 
 async function submitCreatePackage() {
-    const title = document.getElementById('newPkgTitle').value;
+    const title = document.getElementById('newPkgTitle').value.trim();
+    if (title.length < 3) { showToast('Please enter a package title (at least 3 characters).', 'error'); return; }
     const destId = document.getElementById('newPkgDestSelect').value;
     const payload = { title: title, destinationId: parseInt(destId), safariType: document.getElementById('newPkgType').value, durationHours: parseInt(document.getElementById('newPkgDuration').value), basePrice: parseFloat(document.getElementById('newPkgPrice').value), description: document.getElementById('newPkgDesc').value, inclusions: 'Open-top 4x4 Jeep, park entry permits, certified tracker' };
 
     try {
         const res = await fetch('/api/operations/packages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const data = await res.json().catch(() => ({}));
         if (res.ok) { closeModal('createPackageModal'); showToast('Package created!', 'success'); await loadInitialData(); await loadOperationsPackages(); }
+        else { showToast(data.message || 'Could not create the package.', 'error'); }
     } catch (e) { showToast('Network error: ' + e.message, 'error'); }
 }
 
@@ -1499,8 +1500,11 @@ async function submitEditPackage() {
     const id = document.getElementById('editPkgId').value;
     const destId = document.getElementById('editPkgDestSelect').value;
 
+    const editTitle = document.getElementById('editPkgTitle').value.trim();
+    if (editTitle.length < 3) { showToast('Please enter a package title (at least 3 characters).', 'error'); return; }
+
     const payload = {
-        title: document.getElementById('editPkgTitle').value,
+        title: editTitle,
         destinationId: parseInt(destId),
         safariType: document.getElementById('editPkgType').value,
         durationHours: parseInt(document.getElementById('editPkgDuration').value),
@@ -1732,9 +1736,15 @@ async function submitRecordMaintenance() {
 }
 
 async function submitCreateVehicle() {
+    const registrationNumber = document.getElementById('newVehReg').value.trim();
+    const modelName = document.getElementById('newVehModel').value.trim();
+    if (!registrationNumber) { showToast('Please enter the vehicle registration number.', 'error'); return; }
+    if (!modelName) { showToast('Please enter the vehicle model.', 'error'); return; }
     try {
-        const res = await fetch('/api/fleet/vehicles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ registrationNumber: document.getElementById('newVehReg').value, modelName: document.getElementById('newVehModel').value, modelYear: document.getElementById('newVehYear').value, seatingCapacity: parseInt(document.getElementById('newVehSeats').value) || 6, isAirConditioned: document.getElementById('newVehAc').value === 'true' }) });
+        const res = await fetch('/api/fleet/vehicles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ registrationNumber, modelName, modelYear: document.getElementById('newVehYear').value, seatingCapacity: parseInt(document.getElementById('newVehSeats').value) || 6, isAirConditioned: document.getElementById('newVehAc').value === 'true' }) });
+        const data = await res.json().catch(() => ({}));
         if (res.ok) { closeModal('createVehicleModal'); showToast('Vehicle added!', 'success'); await loadFleetVehicles(); }
+        else { showToast(data.message || 'Could not add the vehicle.', 'error'); }
     } catch (e) { showToast('Error: ' + e.message, 'error'); }
 }
 
@@ -1843,13 +1853,62 @@ async function loadFinancePayments() {
                     <td>
                         <div style="display: inline-flex; gap: 6px; align-items: center;">
                             ${actionHtml}
+                            ${p.status === 'PENDING' && p.paymentMethod === 'BANK_TRANSFER' ? '' : `
                             <button class="btn btn-sm btn-outline" style="color: var(--color-danger); border-color: var(--color-danger);"
-                                onclick="deletePaymentRecord(${p.id})">Remove</button>
+                                onclick="openRemovePaymentModal(${p.id}, '${p.transactionRef}')">Remove</button>`}
                         </div>
                     </td>
                 </tr>
             `;
         });
+    } catch (e) { console.error(e); }
+    await loadRemovedPayments();
+}
+
+// ---- Finance: remove a payment from the ledger (reason required, removal is recorded) ----
+function openRemovePaymentModal(paymentId, ref) {
+    document.getElementById('removePaymentId').value = paymentId;
+    document.getElementById('removePaymentRef').textContent = ref;
+    document.getElementById('removePaymentReason').value = '';
+    openModal('removePaymentModal');
+}
+
+async function submitRemovePayment() {
+    const id = document.getElementById('removePaymentId').value;
+    const reason = document.getElementById('removePaymentReason').value.trim();
+    if (reason.length < 10 || reason.replace(/[^A-Za-z]/g, '').length < 3) {
+        showToast('Please enter a valid reason (at least 10 characters) for removing this payment.', 'error');
+        return;
+    }
+    try {
+        const res = await fetch(`/api/finance/payments/${id}`, {
+            method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ reason })
+        });
+        const data = await res.json().catch(() => ({}));
+        showToast(data.message || (res.ok ? 'Payment removed.' : 'Could not remove the payment.'), res.ok ? 'success' : 'error');
+        if (res.ok) { closeModal('removePaymentModal'); await loadFinancePayments(); await loadFinanceSummary(); }
+    } catch (e) { showToast('Network error: ' + e.message, 'error'); }
+}
+
+async function loadRemovedPayments() {
+    const tableBody = document.getElementById('financeRemovedPaymentsTableBody');
+    if (!tableBody) return;
+    try {
+        const res = await fetch('/api/finance/payments/removed');
+        if (!res.ok) return;
+        const rows = await res.json();
+        tableBody.innerHTML = rows.length === 0
+            ? '<tr><td colspan="7" style="text-align: center; color: var(--color-text-muted);">No payments have been removed.</td></tr>'
+            : rows.map(r => `
+                <tr>
+                    <td><strong>${r.paymentId}</strong></td>
+                    <td>${escapeHtml(r.transactionRef)}</td>
+                    <td>${escapeHtml(r.bookingReference || '-')}</td>
+                    <td>${formatPrice(r.amount)}</td>
+                    <td>${r.removedAt ? String(r.removedAt).replace('T', ' ').substring(0, 16) : '-'}</td>
+                    <td>${escapeHtml(r.removedBy)}<div class="pay-detail">${escapeHtml(r.removedByEmail)}</div></td>
+                    <td style="max-width: 320px; white-space: normal;">${escapeHtml(r.reason)}</td>
+                </tr>`).join('');
     } catch (e) { console.error(e); }
 }
 
@@ -2090,10 +2149,22 @@ function openProfileModal() {
 }
 
 async function submitProfileUpdate() {
+    const fullName = document.getElementById('profileName').value.trim();
+    const phone = document.getElementById('profilePhone').value.trim();
+    if (fullName.length < 2) { showToast('Please enter your full name (at least 2 characters).', 'error'); return; }
+    const digits = phone.replace(/\D/g, '');
+    if (phone && (!/^\+?[0-9 ()-]+$/.test(phone) || digits.length < 9 || digits.length > 15)) {
+        showToast('Please enter a valid phone number, e.g. +94 77 123 4567.', 'error'); return;
+    }
+    const saveBtn = document.querySelector('#profileModal .modal-footer .btn-primary');
+    if (saveBtn) { saveBtn.disabled = true; saveBtn.textContent = 'Saving…'; }
     try {
-        const res = await fetch('/api/user/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fullName: document.getElementById('profileName').value.trim(), phone: document.getElementById('profilePhone').value.trim() }) });
-        if (res.ok) { closeModal('profileModal'); showToast('Profile updated!', 'success'); await checkCurrentUser(); }
+        const res = await fetch('/api/user/profile', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fullName, phone }) });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.success) { closeModal('profileModal'); showToast('Profile updated!', 'success'); await checkCurrentUser(); }
+        else { showToast(data.message || 'Could not update your profile. Please try again.', 'error'); }
     } catch (e) { showToast('Error: ' + e.message, 'error'); }
+    finally { if (saveBtn) { saveBtn.disabled = false; saveBtn.textContent = 'Save Changes'; } }
 }
 
 // --- UPDATE (EDIT) GUIDE LOGIC ---
@@ -2125,9 +2196,15 @@ function openEditVehicleModal(id, reg, model, seats, isAc) {
 }
 
 async function submitEditVehicle() {
+    const registrationNumber = document.getElementById('editVehReg').value.trim();
+    const modelName = document.getElementById('editVehModel').value.trim();
+    if (!registrationNumber) { showToast('Please enter the vehicle registration number.', 'error'); return; }
+    if (!modelName) { showToast('Please enter the vehicle model.', 'error'); return; }
     try {
-        const res = await fetch(`/api/fleet/vehicles/${document.getElementById('editVehId').value}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ registrationNumber: document.getElementById('editVehReg').value, modelName: document.getElementById('editVehModel').value, modelYear: document.getElementById('editVehYear').value, seatingCapacity: parseInt(document.getElementById('editVehSeats').value) || 6, isAirConditioned: document.getElementById('editVehAc').value === 'true' }) });
+        const res = await fetch(`/api/fleet/vehicles/${document.getElementById('editVehId').value}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ registrationNumber, modelName, modelYear: document.getElementById('editVehYear').value, seatingCapacity: parseInt(document.getElementById('editVehSeats').value) || 6, isAirConditioned: document.getElementById('editVehAc').value === 'true' }) });
+        const data = await res.json().catch(() => ({}));
         if (res.ok) { closeModal('editVehicleModal'); showToast('Vehicle updated!', 'success'); loadFleetVehicles(); }
+        else { showToast(data.message || 'Could not update the vehicle.', 'error'); }
     } catch (e) { showToast('Error connecting to the server.', 'error'); }
 }
 
@@ -2145,9 +2222,13 @@ function openEditScheduleModal(id, date, slot, max) {
 }
 
 async function submitEditSchedule() {
+    const maxSlots = parseInt(document.getElementById('editSchedMaxSlots').value);
+    if (!maxSlots || maxSlots < 1 || maxSlots > 40) { showToast('Maximum capacity must be between 1 and 40.', 'error'); return; }
     try {
-        const res = await fetch(`/api/operations/schedules/${document.getElementById('editSchedId').value}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scheduleDate: document.getElementById('editSchedDate').value, timeSlot: document.getElementById('editSchedSlot').value, maxSlots: parseInt(document.getElementById('editSchedMaxSlots').value) }) });
+        const res = await fetch(`/api/operations/schedules/${document.getElementById('editSchedId').value}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ scheduleDate: document.getElementById('editSchedDate').value, timeSlot: document.getElementById('editSchedSlot').value, maxSlots }) });
+        const data = await res.json().catch(() => ({}));
         if (res.ok) { closeModal('editScheduleModal'); showToast('Schedule updated!', 'success'); loadOperationsSchedules(); }
+        else { showToast(data.message || 'Could not update the schedule.', 'error'); }
     } catch (e) { showToast('Error updating schedule.', 'error'); }
 }
 
@@ -2165,9 +2246,15 @@ function openEditTicketModal(id, category, subject, desc) {
 }
 
 async function submitEditTicket() {
+    const subject = document.getElementById('editTckSubject').value.trim();
+    const description = document.getElementById('editTckDesc').value.trim();
+    if (subject.length < 3) { showToast('Please enter a subject (at least 3 characters).', 'error'); return; }
+    if (!description) { showToast('Please enter a description of your request.', 'error'); return; }
     try {
-        const res = await fetch(`/api/customer/support/tickets/${document.getElementById('editTckId').value}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ category: document.getElementById('editTckCategory').value, subject: document.getElementById('editTckSubject').value, description: document.getElementById('editTckDesc').value }) });
+        const res = await fetch(`/api/customer/support/tickets/${document.getElementById('editTckId').value}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ category: document.getElementById('editTckCategory').value, subject, description }) });
+        const data = await res.json().catch(() => ({}));
         if (res.ok) { closeModal('editTicketModal'); showToast('Ticket updated!', 'success'); loadCustomerTickets(); }
+        else { showToast(data.message || 'Could not update the ticket.', 'error'); }
     } catch (e) { showToast('Server connection error.', 'error'); }
 }
 

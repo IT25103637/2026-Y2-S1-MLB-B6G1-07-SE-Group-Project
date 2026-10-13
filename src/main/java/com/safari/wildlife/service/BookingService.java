@@ -261,9 +261,32 @@ public class BookingService {
 
         return bookingRepository.save(booking);
     }
-    public void deleteBookingHistory(Long id) {
-        // Hard deletes the record from the database to clean up the UI
-        bookingRepository.deleteById(id);
+    /**
+     * Customer removes a finished booking from their own history. Only the customer's view changes:
+     * the booking, payment, receipt and refund records are kept for staff and finance.
+     */
+    @Transactional
+    public Booking hideBookingForCustomer(Long bookingId, User currentUser) {
+        Booking booking = getBookingById(bookingId);
+
+        if (!booking.getCustomer().getUser().getId().equals(currentUser.getId())) {
+            throw new BadRequestException("You are not authorized to remove this booking.");
+        }
+        BookingStatus status = booking.getStatus();
+        if (status == BookingStatus.PENDING || status == BookingStatus.APPROVED_AWAITING_PAYMENT) {
+            throw new BadRequestException("Active bookings cannot be removed from your history. Please cancel the booking instead.");
+        }
+
+        booking.hideForCustomer();
+        return bookingRepository.save(booking);
+    }
+
+    /** The customer's own booking list, without the bookings they removed from their history. */
+    @Transactional(readOnly = true)
+    public List<Booking> getVisibleBookingsForCustomer(Long customerId) {
+        return bookingRepository.findByCustomerIdOrderByCreatedAtDesc(customerId).stream()
+                .filter(b -> !b.isHiddenByCustomer())
+                .toList();
     }
 
     private String generateBookingReference() {

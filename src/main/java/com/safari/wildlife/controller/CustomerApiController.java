@@ -78,7 +78,8 @@ public class CustomerApiController {
         if (customer == null) {
             throw new BadRequestException("Customer profile not found.");
         }
-        return ResponseEntity.ok(bookingService.getBookingsByCustomer(customer.getId()));
+        // bookings the customer removed from their history are left out of their own list only
+        return ResponseEntity.ok(bookingService.getVisibleBookingsForCustomer(customer.getId()));
     }
 
     @GetMapping("/bookings/{id}")
@@ -227,11 +228,35 @@ public class CustomerApiController {
         }
     }
 
+    private static ResponseEntity<Map<String, Object>> ticketBadRequest(String message) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", message);
+        return ResponseEntity.status(400).body(response);
+    }
+
     @PutMapping("/support/tickets/{id}")
     public ResponseEntity<Map<String, Object>> updateTicketObj(@PathVariable Long id, @RequestBody Map<String, String> payload) {
         try {
             com.safari.wildlife.entity.SupportTicket t = ticketRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Ticket not found"));
+
+            // Only the customer who raised the ticket may edit it
+            User current = authService.getCurrentUser();
+            if (current == null || t.getCustomer() == null || t.getCustomer().getUser() == null
+                    || !t.getCustomer().getUser().getId().equals(current.getId())) {
+                return ticketBadRequest("You are not authorized to edit this support ticket.");
+            }
+
+            // Same rules as creating a ticket: subject 3-200 characters, description required
+            String subject = payload.containsKey("subject") ? (payload.get("subject") == null ? "" : payload.get("subject").trim()) : null;
+            String description = payload.containsKey("description") ? (payload.get("description") == null ? "" : payload.get("description").trim()) : null;
+            if (subject != null && (subject.length() < 3 || subject.length() > 200)) {
+                return ticketBadRequest(subject.isEmpty() ? "Subject is required." : "Subject must be between 3 and 200 characters.");
+            }
+            if (description != null && description.isEmpty()) {
+                return ticketBadRequest("Description / Message is required.");
+            }
 
             String catRaw = payload.get("category");
             if (catRaw != null && !catRaw.trim().isEmpty()) {
@@ -239,11 +264,11 @@ public class CustomerApiController {
                 t.setCategory(com.safari.wildlife.enums.TicketCategory.valueOf(categoryStr));
             }
 
-            if (payload.get("subject") != null) {
-                t.setSubject(payload.get("subject"));
+            if (subject != null) {
+                t.setSubject(subject);
             }
-            if (payload.get("description") != null) {
-                t.setDescription(payload.get("description"));
+            if (description != null) {
+                t.setDescription(description);
             }
 
             ticketRepository.save(t);
@@ -291,13 +316,13 @@ public class CustomerApiController {
         response.put("totalAmount", booking.getTotalAmount());
         return ResponseEntity.ok(response);
     }
+    /**
+     * "Remove" in the customer's booking history. This only hides the booking from the customer's
+     * own list; the booking, payment, receipt and refund records are kept for staff and finance.
+     */
     @DeleteMapping("/bookings/{id}")
     public ResponseEntity<Map<String, Object>> deleteBookingHistory(@PathVariable Long id) {
-        try {
-            bookingService.deleteBookingHistory(id);
-            return ResponseEntity.ok(Map.of("success", true, "message", "Booking removed successfully"));
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(Map.of("success", false, "message", e.getMessage()));
-        }
+        bookingService.hideBookingForCustomer(id, authService.getCurrentUser());
+        return ResponseEntity.ok(Map.of("success", true, "message", "Booking removed from your history."));
     }
 }

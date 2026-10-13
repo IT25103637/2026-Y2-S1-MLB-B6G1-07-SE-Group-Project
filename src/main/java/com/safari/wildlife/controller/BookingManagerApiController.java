@@ -108,6 +108,14 @@ public class BookingManagerApiController {
 
     @DeleteMapping("/bookings/{id}")
     public ResponseEntity<Map<String, Object>> deleteBookingObj(@PathVariable Long id) {
+        // Deleting a booking would cascade to its payment, receipt and refunds; finance records must be kept
+        com.safari.wildlife.entity.Booking existing = bookingRepository.findById(id).orElse(null);
+        if (existing != null && existing.getPayment() != null) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "This booking has payment records and cannot be deleted.");
+            return ResponseEntity.status(400).body(response);
+        }
         try {
             bookingRepository.deleteById(id);
             Map<String, Object> response = new HashMap<>(); response.put("success", true);

@@ -1,5 +1,6 @@
 package com.safari.wildlife.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.safari.wildlife.enums.PaymentStatus;
 import jakarta.persistence.*;
@@ -53,6 +54,12 @@ public class Payment {
     @OneToOne(mappedBy = "payment", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JsonIgnoreProperties({"payment", "hibernateLazyInitializer", "handler"})
     private Refund refund;
+
+    // Removed from the finance ledger by a Finance Manager. The row is kept (soft delete);
+    // payment_removals records who removed it, when and why.
+    @JsonIgnore
+    @Column(name = "removed")
+    private Boolean removed = false;
 
     public Payment() {}
 
@@ -150,5 +157,14 @@ public class Payment {
 
     public void setRefund(Refund refund) {
         this.refund = refund;
+    }
+
+    @JsonIgnore
+    public boolean isRemoved() {
+        return Boolean.TRUE.equals(removed);            // rows created before this column existed hold NULL
+    }
+
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
     }
 }

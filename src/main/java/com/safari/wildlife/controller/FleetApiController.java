@@ -54,86 +54,82 @@ public class FleetApiController {
 
     @PostMapping("/vehicles")
     public ResponseEntity<Map<String, Object>> createVehicle(@RequestBody Map<String, Object> payload) {
-        try {
-            // BACKEND SECURITY CHECK: Prevent 0 or negative seats
-            int capacity = Integer.parseInt(payload.get("seatingCapacity").toString());
-            if (capacity < 1 || capacity > 12) {
-                Map<String, Object> response = new HashMap<>();
-                response.put("success", false);
-                response.put("message", "Vehicle capacity must be between 1 and 12 seats.");
-                return ResponseEntity.status(400).body(response);
-            }
-
-            com.safari.wildlife.entity.Vehicle v = new com.safari.wildlife.entity.Vehicle();
-            v.setRegistrationNumber(payload.get("registrationNumber").toString());
-            v.setModelName(payload.get("modelName").toString());
-            if (payload.get("modelYear") != null && !payload.get("modelYear").toString().isEmpty()) {
-                v.setModelYear(Integer.parseInt(payload.get("modelYear").toString()));
-            }
-            v.setSeatingCapacity(capacity); // Use the validated integer
-            v.setIsAirConditioned(Boolean.parseBoolean(payload.get("isAirConditioned").toString()));
-            v.setStatus(com.safari.wildlife.enums.VehicleStatus.AVAILABLE);
-
-            vehicleRepository.save(v);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Vehicle added successfully.");
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Error adding vehicle: " + e.getMessage());
-            return ResponseEntity.status(500).body(response);
+        // BACKEND SECURITY CHECK: Prevent 0 or negative seats
+        Integer capacity = parseIntOrNull(payload.get("seatingCapacity"));
+        if (capacity == null || capacity < 1 || capacity > 12) {
+            return badRequest("Vehicle capacity must be between 1 and 12 seats.");
         }
+
+        com.safari.wildlife.dto.VehicleDto dto = new com.safari.wildlife.dto.VehicleDto();
+        dto.setRegistrationNumber(payload.get("registrationNumber") != null ? payload.get("registrationNumber").toString() : null);
+        dto.setModelName(payload.get("modelName") != null ? payload.get("modelName").toString() : null);
+        dto.setModelYear(parseIntOrNull(payload.get("modelYear")));
+        dto.setSeatingCapacity(capacity);
+        dto.setAirConditioned(payload.get("isAirConditioned") != null && Boolean.parseBoolean(payload.get("isAirConditioned").toString()));
+        dto.setStatus(com.safari.wildlife.enums.VehicleStatus.AVAILABLE);
+
+        // FleetService checks the registration number (required, valid, not a duplicate) and the model name
+        com.safari.wildlife.entity.Vehicle saved = fleetService.registerVehicle(dto, authService.getCurrentUser());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Vehicle added successfully.");
+        response.put("vehicleId", saved.getId());
+        return ResponseEntity.ok(response);
     }
 
     // --- MISSING VEHICLE UPDATE AND DELETE ENDPOINTS ADDED HERE ---
     @PutMapping("/vehicles/{id}")
     public ResponseEntity<Map<String, Object>> updateVehicleObj(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
-        try {
-            com.safari.wildlife.entity.Vehicle v = vehicleRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Vehicle not found"));
+        com.safari.wildlife.entity.Vehicle v = fleetService.getVehicleById(id);
 
-            if (payload.get("registrationNumber") != null) {
-                v.setRegistrationNumber(payload.get("registrationNumber").toString());
+        // Fields that are not sent keep their current value
+        Integer capacity = v.getSeatingCapacity();
+        if (payload.get("seatingCapacity") != null && !payload.get("seatingCapacity").toString().isEmpty()) {
+            // BACKEND SECURITY CHECK: Prevent 0 or negative seats on update
+            capacity = parseIntOrNull(payload.get("seatingCapacity"));
+            if (capacity == null || capacity < 1 || capacity > 12) {
+                return badRequest("Vehicle capacity must be between 1 and 12 seats.");
             }
-            if (payload.get("modelName") != null) {
-                v.setModelName(payload.get("modelName").toString());
-            }
-            // ADD THIS BLOCK:
-            if (payload.get("modelYear") != null && !payload.get("modelYear").toString().isEmpty()) {
-                v.setModelYear(Integer.parseInt(payload.get("modelYear").toString()));
-            }
-            if (payload.get("seatingCapacity") != null && !payload.get("seatingCapacity").toString().isEmpty()) {
-
-                // BACKEND SECURITY CHECK: Prevent 0 or negative seats on update
-                int capacity = Integer.parseInt(payload.get("seatingCapacity").toString());
-                if (capacity < 1 || capacity > 12) {
-                    Map<String, Object> response = new HashMap<>();
-                    response.put("success", false);
-                    response.put("message", "Vehicle capacity must be between 1 and 12 seats.");
-                    return ResponseEntity.status(400).body(response);
-                }
-                v.setSeatingCapacity(capacity);
-            }
-            if (payload.get("isAirConditioned") != null) {
-                v.setIsAirConditioned(Boolean.parseBoolean(payload.get("isAirConditioned").toString()));
-            }
-
-            vehicleRepository.save(v);
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Vehicle updated successfully.");
-            return ResponseEntity.ok(response);
-
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Backend Error: " + e.getMessage());
-            return ResponseEntity.status(500).body(response);
         }
+
+        com.safari.wildlife.dto.VehicleDto dto = new com.safari.wildlife.dto.VehicleDto();
+        dto.setRegistrationNumber(payload.containsKey("registrationNumber")
+                ? (payload.get("registrationNumber") != null ? payload.get("registrationNumber").toString() : null)
+                : v.getRegistrationNumber());
+        dto.setModelName(payload.containsKey("modelName")
+                ? (payload.get("modelName") != null ? payload.get("modelName").toString() : null)
+                : v.getModelName());
+        Integer year = parseIntOrNull(payload.get("modelYear"));
+        dto.setModelYear(year != null ? year : v.getModelYear());
+        dto.setSeatingCapacity(capacity);
+        dto.setAirConditioned(payload.get("isAirConditioned") != null
+                ? Boolean.parseBoolean(payload.get("isAirConditioned").toString()) : v.getIsAirConditioned());
+        dto.setStatus(null);   // editing details must not change the vehicle's status (e.g. under maintenance)
+
+        // FleetService checks the registration number (required, valid, not used by another vehicle)
+        fleetService.updateVehicle(id, dto, authService.getCurrentUser());
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Vehicle updated successfully.");
+        return ResponseEntity.ok(response);
+    }
+
+    private static Integer parseIntOrNull(Object value) {
+        if (value == null || value.toString().trim().isEmpty()) return null;
+        try {
+            return Integer.valueOf(value.toString().trim());
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private static ResponseEntity<Map<String, Object>> badRequest(String message) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", message);
+        return ResponseEntity.status(400).body(response);
     }
 
     @DeleteMapping("/vehicles/{id}")

@@ -3,6 +3,7 @@ package com.safari.wildlife.controller;
 import com.safari.wildlife.dto.RefundRequestDto;
 import com.safari.wildlife.repository.PaymentRepository;
 import com.safari.wildlife.entity.Payment;
+import com.safari.wildlife.entity.PaymentRemoval;
 import com.safari.wildlife.entity.PaymentReceipt;
 import com.safari.wildlife.entity.Refund;
 import com.safari.wildlife.entity.User;
@@ -104,6 +105,7 @@ public class FinanceApiController {
         csv.append("Transaction ID,Booking Reference,Amount (USD),Payment Method,Status,Transaction Date\n");
 
         for (Payment p : payments) {
+            if (p.isRemoved()) continue;   // removed payments are listed in payment_removals instead
             String bookingRef = p.getBooking() != null ? p.getBooking().getBookingReference() : "N/A";
 
             // Corrected getters based on your Payment entity
@@ -132,15 +134,40 @@ public class FinanceApiController {
                 .body(csvBytes);
     }
 
+    /**
+     * Removes a payment from the finance ledger. A reason is mandatory. The payment row is kept and a
+     * payment_removals record stores the payment ID, when it was removed, by whom and why.
+     */
     @DeleteMapping("/payments/{id}")
-    public ResponseEntity<Map<String, Object>> deletePaymentObj(@PathVariable Long id) {
-        try {
-            paymentRepository.deleteById(id);
-            Map<String, Object> response = new HashMap<>(); response.put("success", true);
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>(); response.put("success", false);
-            return ResponseEntity.status(500).body(response);
+    public ResponseEntity<Map<String, Object>> deletePaymentObj(@PathVariable Long id,
+                                                                @RequestBody(required = false) Map<String, String> body) {
+        String reason = body != null ? body.get("reason") : null;
+        PaymentRemoval removal = paymentService.removePayment(id, authService.getCurrentUser(), reason);
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Payment " + removal.getTransactionRef() + " was removed from the ledger. The removal has been recorded.");
+        response.put("removalId", removal.getId());
+        return ResponseEntity.ok(response);
+    }
+
+    /** Log of payments removed from the ledger: payment ID, when, by whom and the reason given. */
+    @GetMapping("/payments/removed")
+    public ResponseEntity<List<Map<String, Object>>> getRemovedPayments() {
+        List<Map<String, Object>> rows = new java.util.ArrayList<>();
+        for (PaymentRemoval r : paymentService.getPaymentRemovals()) {
+            Map<String, Object> row = new HashMap<>();
+            row.put("id", r.getId());
+            row.put("paymentId", r.getPayment().getId());
+            row.put("transactionRef", r.getTransactionRef());
+            row.put("bookingReference", r.getBookingReference());
+            row.put("amount", r.getAmount());
+            row.put("paymentStatus", r.getPaymentStatus());
+            row.put("removedAt", r.getRemovedAt());
+            row.put("removedBy", r.getRemovedBy().getFullName());
+            row.put("removedByEmail", r.getRemovedBy().getEmail());
+            row.put("reason", r.getReason());
+            rows.add(row);
         }
+        return ResponseEntity.ok(rows);
     }
 }

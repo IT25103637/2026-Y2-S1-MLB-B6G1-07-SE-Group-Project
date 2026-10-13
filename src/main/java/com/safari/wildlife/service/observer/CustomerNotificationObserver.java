@@ -46,7 +46,7 @@ public class CustomerNotificationObserver implements BookingEventObserver {
             case REFUND_PROCESSED -> notify(event, "Refund Processed: " + event.getRefund().getRefundRef(),
                     "A refund of $" + event.getRefund().getAmount() + " has been processed for booking " + ref
                             + ". Reason: " + event.getRefund().getReason(), "PAYMENT");
-            default -> { /* BANK_TRANSFER_VERIFIED: the customer already gets the PAYMENT_CONFIRMED message */ }
+            default -> { /* BANK_TRANSFER_VERIFIED: covered by PAYMENT_CONFIRMED; PAYMENT_REMOVED is internal to finance */ }
         }
     }
 

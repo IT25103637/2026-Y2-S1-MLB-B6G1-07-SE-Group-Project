@@ -1,6 +1,7 @@
 package com.safari.wildlife.dto;
 
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,6 +25,7 @@ public class ScheduleDto {
 
     @NotNull(message = "Max slots count is required")
     @Min(value = 1, message = "Max slots must be at least 1")
+    @Max(value = 40, message = "Max slots cannot be more than 40 guests per schedule")
     private Integer maxSlots = 20;
 
     private String status = "AVAILABLE";

@@ -67,11 +67,23 @@ public class FleetService {
                 .orElseThrow(() -> new ResourceNotFoundException("Vehicle not found with id: " + id));
     }
 
-    @Transactional
-    public Vehicle registerVehicle(VehicleDto dto, User fleetManager) {
-        if (dto.getRegistrationNumber() == null || dto.getRegistrationNumber().trim().isEmpty()) {
+    /** Registration number and model are mandatory for every vehicle (create and edit). */
+    private void validateVehicleDetails(VehicleDto dto) {
+        String reg = dto.getRegistrationNumber() == null ? "" : dto.getRegistrationNumber().trim();
+        if (reg.isEmpty()) {
             throw new BadRequestException("Registration number is required.");
         }
+        if (!reg.matches("[A-Za-z0-9][A-Za-z0-9 -]{1,19}")) {
+            throw new BadRequestException("Registration number may contain only letters, numbers, spaces and hyphens (2-20 characters), e.g. WP-SP-9999.");
+        }
+        if (dto.getModelName() == null || dto.getModelName().trim().isEmpty()) {
+            throw new BadRequestException("Vehicle model name is required.");
+        }
+    }
+
+    @Transactional
+    public Vehicle registerVehicle(VehicleDto dto, User fleetManager) {
+        validateVehicleDetails(dto);
         if (vehicleRepository.existsByRegistrationNumberIgnoreCase(dto.getRegistrationNumber().trim())) {
             throw new BadRequestException("Vehicle with registration number '" + dto.getRegistrationNumber().trim() + "' is already registered.");
         }
@@ -97,6 +109,7 @@ public class FleetService {
     @Transactional
     public Vehicle updateVehicle(Long id, VehicleDto dto, User fleetManager) {
         Vehicle vehicle = getVehicleById(id);
+        validateVehicleDetails(dto);
 
         if (vehicleRepository.existsByRegistrationNumberIgnoreCaseAndIdNot(dto.getRegistrationNumber().trim(), id)) {
             throw new BadRequestException("Another vehicle with registration '" + dto.getRegistrationNumber().trim() + "' already exists.");

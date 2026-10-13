@@ -159,14 +159,20 @@ public class OperationsApiController {
 
     @PutMapping("/schedules/{id}")
     public ResponseEntity<Map<String, Object>> updateScheduleObj(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
-        com.safari.wildlife.entity.SafariSchedule s = scheduleRepository.findById(id).orElseThrow();
-        s.setScheduleDate(LocalDate.parse(payload.get("scheduleDate").toString()));
-        s.setTimeSlot(payload.get("timeSlot").toString());
-        s.setMaxSlots(Integer.parseInt(payload.get("maxSlots").toString()));
-        scheduleRepository.save(s);
+        // Same rules as creating a schedule: 1-40 guests, not below booked seats, no duplicate date/time slot
+        ScheduleDto dto = new ScheduleDto();
+        dto.setScheduleDate(payload.get("scheduleDate") != null && !payload.get("scheduleDate").toString().isBlank()
+                ? LocalDate.parse(payload.get("scheduleDate").toString()) : null);
+        dto.setTimeSlot(payload.get("timeSlot") != null ? payload.get("timeSlot").toString() : null);
+        dto.setMaxSlots(payload.get("maxSlots") != null && !payload.get("maxSlots").toString().isBlank()
+                ? Integer.valueOf(payload.get("maxSlots").toString().trim()) : null);
+        dto.setStatus(null);   // editing must not reset the schedule's current status
+
+        scheduleService.updateSchedule(id, dto);
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", true);
+        response.put("message", "Schedule updated successfully.");
         return ResponseEntity.ok(response);
     }
 
@@ -183,9 +189,15 @@ public class OperationsApiController {
 
     @PostMapping("/packages")
     public ResponseEntity<Map<String, Object>> createSafariPackage(@RequestBody Map<String, Object> payload) {
+        // A package must have a title (blank or spaces-only titles are refused)
+        String title = payload.get("title") != null ? payload.get("title").toString().trim() : "";
+        String titleError = validatePackageTitle(title);
+        if (titleError != null) {
+            return packageBadRequest(titleError);
+        }
         try {
             SafariPackage newPackage = new SafariPackage();
-            newPackage.setTitle(payload.get("title").toString());
+            newPackage.setTitle(title);
 
             String typeStr = payload.get("safariType").toString();
             newPackage.setSafariType(SafariType.valueOf(typeStr));
@@ -245,13 +257,38 @@ public class OperationsApiController {
             return ResponseEntity.status(500).body(response);
         }
     }
+    /** Returns an error message when the package title is missing or too long, otherwise null. */
+    private static String validatePackageTitle(String title) {
+        if (title == null || title.isEmpty()) {
+            return "Package title is required.";
+        }
+        if (title.length() < 3 || title.length() > 150) {
+            return "Package title must be between 3 and 150 characters.";
+        }
+        return null;
+    }
+
+    private static ResponseEntity<Map<String, Object>> packageBadRequest(String message) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", message);
+        return ResponseEntity.status(400).body(response);
+    }
+
     @PutMapping("/packages/{id}")
     public ResponseEntity<Map<String, Object>> updateSafariPackage(@PathVariable Long id, @RequestBody Map<String, Object> payload) {
         try {
             com.safari.wildlife.entity.SafariPackage pkg = packageRepository.findById(id)
                     .orElseThrow(() -> new RuntimeException("Package not found"));
 
-            if (payload.get("title") != null) pkg.setTitle(payload.get("title").toString());
+            if (payload.containsKey("title")) {
+                String title = payload.get("title") != null ? payload.get("title").toString().trim() : "";
+                String titleError = validatePackageTitle(title);
+                if (titleError != null) {
+                    return packageBadRequest(titleError);
+                }
+                pkg.setTitle(title);
+            }
             if (payload.get("description") != null) pkg.setDescription(payload.get("description").toString());
             if (payload.get("inclusions") != null) pkg.setInclusions(payload.get("inclusions").toString());
             if (payload.get("safariType") != null) pkg.setSafariType(com.safari.wildlife.enums.SafariType.valueOf(payload.get("safariType").toString()));

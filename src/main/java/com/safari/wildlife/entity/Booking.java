@@ -1,5 +1,6 @@
 package com.safari.wildlife.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.safari.wildlife.enums.BookingStatus;
 import jakarta.persistence.*;
@@ -78,6 +79,16 @@ public class Booking {
     @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"booking", "hibernateLazyInitializer", "handler"})
     private List<SupportTicket> supportTickets = new ArrayList<>();
+
+    // The customer removed this booking from their own history. Only their own list is affected:
+    // the booking, payment, receipt and refund records stay unchanged for staff and finance.
+    @JsonIgnore
+    @Column(name = "hidden_by_customer")
+    private Boolean hiddenByCustomer = false;
+
+    @JsonIgnore
+    @Column(name = "hidden_by_customer_at")
+    private LocalDateTime hiddenByCustomerAt;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -262,5 +273,21 @@ public class Booking {
 
     public void setSupportTickets(List<SupportTicket> supportTickets) {
         this.supportTickets = supportTickets;
+    }
+
+    @JsonIgnore
+    public boolean isHiddenByCustomer() {
+        return Boolean.TRUE.equals(hiddenByCustomer);   // rows created before this column existed hold NULL
+    }
+
+    @JsonIgnore
+    public LocalDateTime getHiddenByCustomerAt() {
+        return hiddenByCustomerAt;
+    }
+
+    /** Hides the booking from the customer's own booking list only; nothing is deleted. */
+    public void hideForCustomer() {
+        this.hiddenByCustomer = true;
+        this.hiddenByCustomerAt = LocalDateTime.now();
     }
 }

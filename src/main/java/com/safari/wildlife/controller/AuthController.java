@@ -81,6 +81,7 @@ public class AuthController {
             response.put("id", user.getId());
             response.put("email", user.getEmail());
             response.put("fullName", user.getFullName());
+            response.put("phone", user.getPhone() != null ? user.getPhone() : "");
             response.put("role", user.getRole().getName().name());
         } else {
             response.put("authenticated", false);
@@ -102,34 +103,9 @@ public class AuthController {
     @Autowired
     private UserRepository userRepository;
 
-    @PutMapping("/api/user/profile")
-    public ResponseEntity<?> updateProfile(@RequestBody Map<String, String> payload, Principal principal) {
-        try {
-            if (principal == null) {
-                return ResponseEntity.status(401).body(Map.of("success", false, "message", "Unauthorized"));
-            }
-
-            // Find the currently logged-in user. principal.getName() gets the email.
-            User user = userRepository.findByEmail(principal.getName())
-                    .orElseThrow(() -> new RuntimeException("User not found"));
-
-            // Update the full name
-            user.setFullName(payload.get("fullName"));
-
-            // Save the updated user back to the database
-            userRepository.save(user);
-
-            return ResponseEntity.ok(Map.of(
-                    "success", true,
-                    "message", "Profile updated successfully."
-            ));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "success", false,
-                    "message", e.getMessage()
-            ));
-        }
-    }
+    // "My Profile" updates are handled by UserProfileController (PUT /api/user/profile).
+    // The method that used to be here was mapped to /api/auth/api/user/profile because of this
+    // class's @RequestMapping("/api/auth") prefix, so the page's requests never reached it.
 
     @GetMapping("/api/auth/current-user")
     public ResponseEntity<?> getCurrentUser(Principal principal) {

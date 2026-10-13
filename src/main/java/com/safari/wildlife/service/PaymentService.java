@@ -30,6 +30,7 @@ public class PaymentService {
     private final RefundRepository refundRepository;
     private final BookingRepository bookingRepository;
     private final SafariScheduleRepository scheduleRepository;
+    private final PaymentRemovalRepository paymentRemovalRepository;
     private final SecureRandom random = new SecureRandom();
 
     // DESIGN PATTERN: Observer Pattern - notifications, receipt e-mails and audit logs are handled by observers
@@ -41,18 +42,24 @@ public class PaymentService {
                           RefundRepository refundRepository,
                           BookingRepository bookingRepository,
                           SafariScheduleRepository scheduleRepository,
+                          PaymentRemovalRepository paymentRemovalRepository,
                           BookingEventPublisher bookingEvents) {
         this.paymentRepository = paymentRepository;
         this.receiptRepository = receiptRepository;
         this.refundRepository = refundRepository;
         this.bookingRepository = bookingRepository;
         this.scheduleRepository = scheduleRepository;
+        this.paymentRemovalRepository = paymentRemovalRepository;
         this.bookingEvents = bookingEvents;
     }
 
     @Transactional(readOnly = true)
     public List<Payment> getAllPayments() {
-        return paymentRepository.findAllByOrderByPaidAtDesc();
+        // Finance ledger: every payment except those a Finance Manager removed (see payment_removals).
+        // Bookings a customer removed from their own history are still included.
+        return paymentRepository.findAllByOrderByPaidAtDesc().stream()
+                .filter(p -> !p.isRemoved())
+                .toList();
     }
 
     @Transactional(readOnly = true)
@@ -151,9 +158,11 @@ public class PaymentService {
 
         if (payment == null) {
             payment = new Payment(booking, newTransactionRef(method), method, booking.getTotalAmount());
-        } else if (!method.equals(payment.getPaymentMethod())) {
-            payment.setTransactionRef(newTransactionRef(method));           // a new attempt with another method
+        } else if (payment.isRemoved() || !method.equals(payment.getPaymentMethod())) {
+            // a new attempt with another method, or after the previous attempt was removed by finance
+            payment.setTransactionRef(newTransactionRef(method));
         }
+        payment.setRemoved(false);                                       // a new attempt is a live ledger entry again
         payment.setPaymentMethod(method);
         payment.setPaymentDetails(details);
         payment.setAmount(booking.getTotalAmount());
@@ -189,7 +198,7 @@ public class PaymentService {
     /** Finance Manager confirms that a bank transfer has arrived: payment PAID, booking CONFIRMED, receipt issued. */
     @Transactional
     public Payment verifyBankTransfer(Long paymentId, User financeManager) {
-        Payment payment = getPaymentById(paymentId);
+        Payment payment = requireActive(getPaymentById(paymentId));
         if (!BANK_TRANSFER.equals(payment.getPaymentMethod()) || payment.getStatus() != PaymentStatus.PENDING) {
             throw new BadRequestException("Only bank transfers that are waiting for verification can be verified.");
         }
@@ -207,7 +216,7 @@ public class PaymentService {
     /** Finance Manager could not find the transfer: payment FAILED with a reason, customer may pay again. */
     @Transactional
     public Payment rejectBankTransfer(Long paymentId, User financeManager, String reason) {
-        Payment payment = getPaymentById(paymentId);
+        Payment payment = requireActive(getPaymentById(paymentId));
         if (!BANK_TRANSFER.equals(payment.getPaymentMethod()) || payment.getStatus() != PaymentStatus.PENDING) {
             throw new BadRequestException("Only bank transfers that are waiting for verification can be rejected.");
         }
@@ -224,7 +233,50 @@ public class PaymentService {
         return saved;
     }
 
+    // ================= Finance Manager: remove a payment from the ledger =================
+
+    /**
+     * Removes a payment from the finance ledger. The payment row is kept (soft delete) and a
+     * payment_removals record stores the payment ID, when, by whom and the reason given.
+     */
+    @Transactional
+    public PaymentRemoval removePayment(Long paymentId, User financeManager, String reason) {
+        Payment payment = getPaymentById(paymentId);
+        if (payment.isRemoved()) {
+            throw new BadRequestException("This payment has already been removed from the ledger.");
+        }
+        String text = reason == null ? "" : reason.trim();
+        if (text.length() < 10 || text.length() > 500 || text.replaceAll("[^A-Za-z]", "").length() < 3) {
+            throw new BadRequestException("Please enter a valid reason for removing this payment (10 to 500 characters).");
+        }
+        if (payment.getStatus() == PaymentStatus.PENDING && BANK_TRANSFER.equals(payment.getPaymentMethod())) {
+            throw new BadRequestException("This bank transfer is waiting for verification. Verify or reject it before removing it.");
+        }
+
+        payment.setRemoved(true);
+        Payment saved = paymentRepository.save(payment);
+        PaymentRemoval removal = paymentRemovalRepository.save(new PaymentRemoval(saved, financeManager, text));
+
+        // Observer Pattern: the audit log observer records the removal
+        bookingEvents.notifyObservers(new BookingEvent(BookingEventType.PAYMENT_REMOVED, saved.getBooking(), financeManager)
+                .withPayment(saved)
+                .withDetail(text));
+        return removal;
+    }
+
+    @Transactional(readOnly = true)
+    public List<PaymentRemoval> getPaymentRemovals() {
+        return paymentRemovalRepository.findAllByOrderByRemovedAtDesc();
+    }
+
     // ---------------- helpers ----------------
+
+    private Payment requireActive(Payment payment) {
+        if (payment.isRemoved()) {
+            throw new BadRequestException("This payment has been removed from the finance ledger.");
+        }
+        return payment;
+    }
 
     private String newTransactionRef(String method) {
         String prefix = switch (method) {
@@ -308,7 +360,7 @@ public class PaymentService {
 
     @Transactional
     public Refund processRefund(RefundRequestDto dto, User financeManager) {
-        Payment payment = getPaymentById(dto.getPaymentId());
+        Payment payment = requireActive(getPaymentById(dto.getPaymentId()));
 
         if (payment.getStatus() != PaymentStatus.PAID) {
             throw new BadRequestException("Refund can only be issued on completed PAID payments. Current status: " + payment.getStatus());
@@ -346,7 +398,7 @@ public class PaymentService {
 
     @Transactional(readOnly = true)
     public Map<String, Object> getFinancialSummary() {
-        List<Payment> allPayments = paymentRepository.findAll();
+        List<Payment> allPayments = paymentRepository.findAll().stream().filter(p -> !p.isRemoved()).toList();
         BigDecimal totalPaid = BigDecimal.ZERO;
         BigDecimal totalRefunded = BigDecimal.ZERO;
         int paidCount = 0;

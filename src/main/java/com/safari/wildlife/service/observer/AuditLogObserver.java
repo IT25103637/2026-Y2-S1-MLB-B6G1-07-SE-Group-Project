@@ -45,6 +45,8 @@ public class AuditLogObserver implements BookingEventObserver {
                     "Rejected bank transfer for booking " + ref);
             case REFUND_PROCESSED -> log(event, "REFUND_PROCESS", "Refund", event.getRefund().getRefundRef(),
                     "Processed refund of $" + event.getRefund().getAmount() + " for payment ID: " + payment.getId());
+            case PAYMENT_REMOVED -> log(event, "PAYMENT_REMOVED", "Payment", payment.getTransactionRef(),
+                    "Removed payment ID " + payment.getId() + " (booking " + ref + ") from the finance ledger. Reason: " + event.getDetail());
             default -> { /* BOOKING_UPDATED was not audited before either */ }
         }
     }

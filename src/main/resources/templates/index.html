@@ -468,6 +468,25 @@
                             <tbody id="financePaymentsTableBody"></tbody>
                         </table>
                     </div>
+
+                    <h3 style="font-size: 1.2rem; color: var(--color-primary); margin: 28px 0 6px;">Removed Payment Records</h3>
+                    <p style="font-size: 0.85rem; color: var(--color-text-muted); margin: 0 0 12px;">Payments removed from the ledger by the finance team, with the reason given.</p>
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Payment ID</th>
+                                <th>Transaction Ref</th>
+                                <th>Booking Ref</th>
+                                <th>Amount</th>
+                                <th>Removed On</th>
+                                <th>Removed By</th>
+                                <th>Reason</th>
+                            </tr>
+                            </thead>
+                            <tbody id="financeRemovedPaymentsTableBody"></tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- SYSTEM ADMIN TABS -->
@@ -1731,7 +1750,7 @@
             </div>
             <div class="form-group">
                 <label>Max Guest Slot Capacity</label>
-                <input type="number" id="editSchedMaxSlots" class="form-control" min="1" max="100">
+                <input type="number" id="editSchedMaxSlots" class="form-control" min="1" max="40">
             </div>
         </div>
         <div class="modal-footer">
@@ -1877,6 +1896,28 @@
 
 <!-- MODAL: Process Refund -->
 <!-- MODAL: Finance - reject a bank transfer that could not be found -->
+<div id="removePaymentModal" class="modal-overlay">
+    <div class="modal-dialog" style="max-width: 480px;">
+        <div class="modal-header">
+            <h3 class="modal-title">Remove Payment Record</h3>
+            <button class="modal-close" onclick="closeModal('removePaymentModal')" aria-label="Close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <input type="hidden" id="removePaymentId">
+            <p style="margin-bottom: 12px;">Payment <strong id="removePaymentRef"></strong> will be removed from the finance ledger. The removal, your name, the time and the reason below are recorded permanently.</p>
+            <div class="form-group">
+                <label for="removePaymentReason">Reason for removing this payment *</label>
+                <textarea id="removePaymentReason" class="form-control" rows="3" maxlength="500" placeholder="e.g. Duplicate test transaction entered during system testing."></textarea>
+                <small style="color: var(--color-text-muted);">At least 10 characters.</small>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="closeModal('removePaymentModal')">Cancel</button>
+            <button class="btn btn-primary" style="background: var(--color-danger); border-color: var(--color-danger);" onclick="submitRemovePayment()">Remove Payment</button>
+        </div>
+    </div>
+</div>
+
 <div id="rejectTransferModal" class="modal-overlay">
     <div class="modal-dialog" style="max-width: 480px;">
         <div class="modal-header">
@@ -2094,7 +2135,7 @@
 <!-- UPGRADE: Chart.js for Visual Analytics -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <!-- Your existing app script -->
-<script src="/js/safari-app.js?v=8"></script>
+<script src="/js/safari-app.js?v=14"></script>
 <!-- Cinematic home: GSAP + ScrollTrigger + Lenis (pinned versions); page works without them -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>

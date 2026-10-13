@@ -68,6 +68,20 @@ public class ScheduleService {
         return scheduleRepository.existsByDestinationIdAndScheduleDateAndTimeSlot(destinationId, date, timeSlot);
     }
 
+    /** Maximum number of guests a single safari schedule can hold. */
+    public static final int MAX_GUESTS_PER_SCHEDULE = 40;
+
+    /** Capacity must be 1-40 and can never be set below the seats that are already booked. */
+    private void validateCapacity(Integer maxSlots, int bookedSlots) {
+        if (maxSlots == null || maxSlots < 1 || maxSlots > MAX_GUESTS_PER_SCHEDULE) {
+            throw new BadRequestException("Maximum capacity must be between 1 and " + MAX_GUESTS_PER_SCHEDULE + " guests.");
+        }
+        if (maxSlots < bookedSlots) {
+            throw new BadRequestException("Maximum capacity cannot be lower than the " + bookedSlots
+                    + " seats that are already booked on this schedule.");
+        }
+    }
+
     @Transactional
     public SafariSchedule createSchedule(ScheduleDto dto) {
         Destination destination = destinationRepository.findById(dto.getDestinationId())
@@ -82,6 +96,8 @@ public class ScheduleService {
         if (dto.getTimeSlot() == null || dto.getTimeSlot().trim().isEmpty()) {
             throw new BadRequestException("Time slot is required.");
         }
+
+        validateCapacity(dto.getMaxSlots() != null ? dto.getMaxSlots() : 20, 0);
 
         // Conflict check: Scenario 9 prevention
         if (checkScheduleConflict(destination.getId(), dto.getScheduleDate(), dto.getTimeSlot(), null)) {
@@ -110,6 +126,14 @@ public class ScheduleService {
     @Transactional
     public SafariSchedule updateSchedule(Long id, ScheduleDto dto) {
         SafariSchedule schedule = getScheduleById(id);
+
+        if (dto.getScheduleDate() == null) {
+            throw new BadRequestException("Schedule date is required.");
+        }
+        if (dto.getTimeSlot() == null || dto.getTimeSlot().trim().isEmpty()) {
+            throw new BadRequestException("Time slot is required.");
+        }
+        validateCapacity(dto.getMaxSlots(), schedule.getBookedSlots() != null ? schedule.getBookedSlots() : 0);
 
         if (checkScheduleConflict(schedule.getDestination().getId(), dto.getScheduleDate(), dto.getTimeSlot(), id)) {
             throw new ScheduleConflictException("Schedule conflict detected: Another safari schedule already exists for "
